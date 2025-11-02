@@ -4,8 +4,8 @@ package uk.ac.newcastle.enterprisemiddleware.booking;
 import uk.ac.newcastle.enterprisemiddleware.customer.Customer;
 
 /**
- * <p>A simple representation of a "Guest Booking" request.</p>
- * <p>This is NOT a Hibernate @Entity.</p>
+ * <p>Simple POJO representing "Guest Booking" request.</p>
+ *
  * <p>It deserializes a JSON request body having both new Customer and new Booking.</p>
  */
 public class GuestBooking {
