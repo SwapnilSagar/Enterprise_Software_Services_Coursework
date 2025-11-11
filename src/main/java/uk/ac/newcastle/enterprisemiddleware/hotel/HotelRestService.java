@@ -65,6 +65,7 @@ public class HotelRestService {
         }
 
         try {
+            hotel.setId(null);
             Hotel createdHotel = hotelService.createHotel(hotel);
             log.info("POST /hotels successful for hotel: " + createdHotel.getName());
             return Response.status(Response.Status.CREATED).entity(createdHotel).build();

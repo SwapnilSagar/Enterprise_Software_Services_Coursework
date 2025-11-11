@@ -66,6 +66,7 @@ public class CustomerRestService {
         }
 
         try {
+            customer.setId(null);
             Customer createdCustomer = customerService.createCustomer(customer);
             log.info("POST /customers successful for customer: " + createdCustomer.getName());
             return Response.status(Response.Status.CREATED).entity(createdCustomer).build();
