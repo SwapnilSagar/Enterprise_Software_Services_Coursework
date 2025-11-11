@@ -115,10 +115,6 @@ public class TravelAgentService {
                     log.severe("Failed to roll back taxi booking: ID " + createdTaxiBooking.getId() + " - " + rollbackException.getMessage());
                 }
             }
-
-            // No need to roll back the flight booking,
-            // because if it fails, it's the last one in the chain.
-
             // Throw a new exception to inform the user
             throw new WebApplicationException("Booking failed, all partial bookings have been cancelled.", 500);
         }

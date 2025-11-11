@@ -88,6 +88,9 @@ public class BookingRestService {
         // Part 2 Rehydration logic
         // Incoming JSON will have customer/hotel with only ID.
         try {
+
+            booking.setId(null);
+
             if (booking.getCustomer() == null || booking.getCustomer().getId() == null) {
                 throw new ValidationException("Customer ID must be provided");
             }

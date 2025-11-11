@@ -41,7 +41,9 @@ public class CustomerRestServiceTest {
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
-                .body("name", equalTo("Jane"));
+                .body("name", equalTo("Jane"))
+                .body("email", equalTo("jane.doe@example.com"))
+                .body("phoneNumber", equalTo("01234567890"));
     }
 
     @Test
