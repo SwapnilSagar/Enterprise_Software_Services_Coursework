@@ -30,7 +30,7 @@ public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "customer_gen")
-    @TableGenerator(name = "customer_gen", allocationSize = 1, initialValue = 10)
+    @TableGenerator(name = "customer_gen", allocationSize = 1, initialValue = 1)
     private Long id;
 
     @NotNull

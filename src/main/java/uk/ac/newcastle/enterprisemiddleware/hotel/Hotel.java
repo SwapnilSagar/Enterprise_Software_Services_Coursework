@@ -29,7 +29,7 @@ public class Hotel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "hotel_gen")
-    @TableGenerator(name = "hotel_gen", allocationSize = 1, initialValue = 10)
+    @TableGenerator(name = "hotel_gen", allocationSize = 1, initialValue = 1)
     private Long id;
 
     @NotNull
