@@ -31,7 +31,7 @@ public class Booking implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "booking_gen")
-    @TableGenerator(name = "booking_gen", allocationSize = 1, initialValue = 1)
+    @TableGenerator(name = "booking_gen", allocationSize = 1, initialValue = 10)
     private Long id;
 
     //Part 2

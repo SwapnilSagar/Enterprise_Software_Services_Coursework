@@ -14,7 +14,7 @@ public class TravelAgentBooking implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "ta_booking_gen")
-    @TableGenerator(name = "ta_booking_gen", allocationSize = 1, initialValue = 1)
+    @TableGenerator(name = "ta_booking_gen", allocationSize = 1, initialValue = 10)
     private Long id;
 
     // The customer who made this aggregate booking
