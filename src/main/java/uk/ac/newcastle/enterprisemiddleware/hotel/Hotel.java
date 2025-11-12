@@ -1,69 +1,52 @@
 package uk.ac.newcastle.enterprisemiddleware.hotel;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.NoArgsConstructor;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.HotelBooking;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 
-//Part 2
-import uk.ac.newcastle.enterprisemiddleware.booking.Booking;
-import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-// End of part 2
-
+/**
+ * @author Mayank Kunwar
+ * */
+@NoArgsConstructor
 @Entity
-@NamedQueries({
-        @NamedQuery(name = Hotel.FIND_ALL, query = "SELECT h FROM Hotel h ORDER BY h.name ASC"),
-        @NamedQuery(name = Hotel.FIND_BY_PHONE, query = "SELECT h FROM Hotel h WHERE h.phoneNumber = :phoneNumber")
-})
 @Table(name = "hotel", uniqueConstraints = @UniqueConstraint(columnNames = "phone_number"))
+@XmlRootElement
 public class Hotel implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
-    public static final String FIND_ALL = "Hotel.findAll";
-    public static final String FIND_BY_PHONE = "Hotel.findByPhone";
-
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "hotel_gen")
-    @TableGenerator(name = "hotel_gen", allocationSize = 1, initialValue = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(hidden = true)
     private Long id;
 
     @NotNull
-    @Size(min = 1, max = 50)
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Name must be alphabetical (letters only, no spaces)")
-    @Column(name = "name")
+    @NotEmpty
+    @Size(max = 49, message = "Name must be less than 50 characters")
+    @Pattern(regexp = "^[A-Za-z ]+$", message = "Name must contain only letters and spaces")
     private String name;
 
     @NotNull
-    @Pattern(regexp = "^0[0-9]+$", message = "Phone number must start with 0 and be 11 digits long")
+    @Pattern(regexp = "^0\\d{10}$", message = "Must start with 0, contain only digits, and be 11 digits long")
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @NotNull
-    @Size(min = 6, max = 6)
-    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Postcode must be 6 characters and alphanumeric")
-    @Column(name = "postcode")
+    @Pattern(
+            regexp = "^[A-Za-z0-9]{6}$",
+            message = "Postcode must be 6 alphanumeric characters"
+    )
     private String postcode;
 
-    //Part 2
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JsonIgnore // Prevents infinite loops
-    private Set<Booking> bookings;
-
-
-    public Set<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(Set<Booking> bookings) {
-        this.bookings = bookings;
-    }
-    //End of part 2
-
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "hotel-bookings")
+    @Schema(hidden = true)
+    private List<HotelBooking> bookings;
 
     public Long getId() {
         return id;
@@ -73,19 +56,19 @@ public class Hotel implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
+    public @NotNull @NotEmpty @Size(max = 49, message = "Name must be less than 50 characters") @Pattern(regexp = "^[A-Za-z ]+$", message = "Name must contain only letters and spaces") String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull @NotEmpty @Size(max = 49, message = "Name must be less than 50 characters") @Pattern(regexp = "^[A-Za-z ]+$", message = "Name must contain only letters and spaces") String name) {
         this.name = name;
     }
 
-    public String getPhoneNumber() {
+    public @NotNull @Pattern(regexp = "^0\\d{10}$", message = "Must start with 0, contain only digits, and be 11 digits long") String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(@NotNull @Pattern(regexp = "^0\\d{10}$", message = "Must start with 0, contain only digits, and be 11 digits long") String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -93,20 +76,28 @@ public class Hotel implements Serializable {
         return postcode;
     }
 
-    public void setPostcode(String postcode) {
+    public void setPostcode(@Pattern(
+            regexp = "^[A-Za-z0-9]{6}$",
+            message = "Postcode must be 6 alphanumeric characters"
+    ) String postcode) {
         this.postcode = postcode;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Hotel hotel = (Hotel) o;
-        return phoneNumber.equals(hotel.phoneNumber);
+    public List<HotelBooking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<HotelBooking> bookings) {
+        this.bookings = bookings;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(phoneNumber);
+    public String toString() {
+        return "Hotel{" +
+                "id=" + id +
+                ", postcode='" + postcode + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

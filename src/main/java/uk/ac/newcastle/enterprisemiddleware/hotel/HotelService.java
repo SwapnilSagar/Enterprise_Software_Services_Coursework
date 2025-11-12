@@ -1,56 +1,46 @@
 package uk.ac.newcastle.enterprisemiddleware.hotel;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Logger;
 
-@ApplicationScoped
+/**
+ * @author Mayank Kunwar
+ * */
+@Dependent
 public class HotelService {
 
     @Inject
     @Named("logger")
-    Logger log;
+    Logger logger;
 
     @Inject
-    HotelValidator validator;
+    HotelRepository hotelRepository;
 
-    @Inject
-    HotelRepository repository;
-
-    /**
-     * Returns a List of all persisted Hotel objects.
-     */
-    List<Hotel> getAllHotels() {
-        return repository.findAllOrderedByName();
+    public List<Hotel> getAllHotel(@Valid Hotel hotel){
+        return hotelRepository.getAllRecords();
     }
 
-    /**
-     * Writes the provided Hotel object to the application database.
-     * Validates the data in the provided Hotel object.
-     */
-    @Transactional
-    Hotel createHotel(Hotel hotel) throws ConstraintViolationException, UniquePhoneException {
-        log.info("HotelService.create() - Validating and Creating " + hotel.getName());
-
-        // Validate the hotel data
-        validator.validateHotel(hotel);
-
-        // Write the hotel to the database
-        return repository.create(hotel);
+    public List<Hotel> getAllHotelInfo(){
+        String jpql = "SELECT DISTINCT t FROM Hotel t " +
+                "LEFT JOIN FETCH t.bookings b ";
+        return hotelRepository.getAllRelatedRecords(jpql, null);
     }
-    //Part 2
-    @Transactional
-    Hotel deleteHotel(Long id) throws Exception {
-        log.info("HotelService.delete() - Deleting hotel " + id);
-        Hotel hotel = repository.findById(id);
-        if (hotel == null) {
-            return null;
-        }
-        return repository.delete(hotel);
+
+    public Hotel getHotelById(long id){
+        return hotelRepository.getRecordById(id);
     }
-    //End of part 2
+
+    public void createHotel(Hotel hotel) throws Exception {
+        logger.info("Creating hotel: " + hotel.toString());
+        hotelRepository.create(hotel);
+    }
+
+    public void deleteHotel(Long id){
+        logger.info("Deleting Hotel with ID: " + id);
+        hotelRepository.delete(hotelRepository.getRecordById(id));
+    }
 }

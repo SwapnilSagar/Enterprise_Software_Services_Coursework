@@ -10,7 +10,9 @@ import java.sql.SQLException;
 public class Application {
 
     private static Server server;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        // Start H2 in server mode to allow remote connections (DBeaver)
+        server = Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers", "-ifNotExists").start();
 
         // Start the Quarkus app
         Quarkus.run(args);

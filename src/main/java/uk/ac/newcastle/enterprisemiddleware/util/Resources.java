@@ -4,7 +4,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * This class uses CDI to alias Java EE resources, such as the persistence context, to CDI beans
@@ -18,7 +17,6 @@ import javax.enterprise.context.ApplicationScoped;
  * private EntityManager em;
  * </pre>
  */
-@ApplicationScoped
 public class Resources {
 //
 //    @Produces

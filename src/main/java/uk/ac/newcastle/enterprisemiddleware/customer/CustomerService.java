@@ -1,51 +1,49 @@
 package uk.ac.newcastle.enterprisemiddleware.customer;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-@ApplicationScoped
+/**
+ * @Dependent — CDI scope meaning a new instance is created every time it’s injected.
+ * It’s lightweight and appropriate for stateless services.
+ *
+ * @author Mayank Kunwar
+ * */
+@Dependent
 public class CustomerService {
 
     @Inject
-    @Named("logger") // Inject the logger
-    Logger log;
+    @Named("logger")
+    Logger logger;
 
     @Inject
-    CustomerValidator validator;
+    CustomerRepository customerRepository;
 
-    @Inject
-    CustomerRepository repository;
-
-    List<Customer> getAllCustomers() {
-        return repository.findAllOrderedByName();
+    public List<Customer> getAllCustomers(){
+        return customerRepository.getAllRecords();
     }
 
-    @Transactional
-    public Customer createCustomer(Customer customer) throws ConstraintViolationException, UniqueEmailException {
-        log.info("CustomerService.create() - Validating and Creating " + customer.getName());
-
-        // Validate the customer data
-        validator.validateCustomer(customer);
-
-        // Write the customer to the database
-        return repository.create(customer);
+    public List<Customer> getAllCustomersInfo(){
+        String jpql = "SELECT DISTINCT c FROM Customer c " +
+                "LEFT JOIN FETCH c.bookings b ";
+        return customerRepository.getAllRelatedRecords(jpql, null);
     }
 
-
-    //Part 2
-    @Transactional
-    Customer deleteCustomer(Long id) throws Exception {
-        log.info("CustomerService.delete() - Deleting customer " + id);
-        Customer customer = repository.findById(id);
-        if (customer == null) {
-            return null; // Let REST service handle 404
-        }
-        return repository.delete(customer);
+    public Customer getCustomerById(long id){
+        return customerRepository.getRecordById(id);
     }
-    //End of part 2
+
+    public void createCustomer(Customer customer) throws Exception {
+        logger.info("Creating customer: " + customer.toString());
+        customerRepository.create(customer);
+    }
+
+    public void delete(Long id){
+        logger.info("Deleting Customer with ID: " + id);
+        customerRepository.delete(customerRepository.getRecordById(id));
+    }
 }

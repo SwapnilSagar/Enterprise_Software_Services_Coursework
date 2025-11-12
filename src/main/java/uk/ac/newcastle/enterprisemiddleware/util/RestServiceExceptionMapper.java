@@ -27,11 +27,17 @@ public class RestServiceExceptionMapper implements ExceptionMapper<RestServiceEx
 
     @Override
     public Response toResponse(final RestServiceException e) {
+        Throwable root = e;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
+        }
 
-        log.severe("Mapping RestServiceException with status + \"" + e.getStatus() + "\", message: \"" + e.getMessage()
-                + "\" and stack trace:" + System.getProperty("line.separator") + e);
+        log.severe("Mapping RestServiceException with status " + e.getStatus() +
+                ", message: " + e.getMessage() + ", root cause: " + root);
+        root.printStackTrace();
 
-        Response.ResponseBuilder builder = Response.status(e.getStatus()).entity(new ErrorMessage(e.getMessage(), e.getReasons()));
+        Response.ResponseBuilder builder = Response.status(e.getStatus())
+                .entity(new ErrorMessage(e.getMessage(), e.getReasons()));
         return builder.build();
     }
 }
