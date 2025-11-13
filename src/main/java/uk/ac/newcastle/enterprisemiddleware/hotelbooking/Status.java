@@ -1,7 +1,7 @@
 package uk.ac.newcastle.enterprisemiddleware.hotelbooking;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public enum Status {
     PENDING,

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class CustomerMapper {
 

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class GenricRepository<T, ID> {
 

@@ -1,7 +1,7 @@
 package uk.ac.newcastle.enterprisemiddleware.agent;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public enum GlobalStatus {
     PENDING,

@@ -3,7 +3,7 @@ package uk.ac.newcastle.enterprisemiddleware.agent;
 import uk.ac.newcastle.enterprisemiddleware.hotel.Hotel;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class BookingEntity {
     private Flight flight;

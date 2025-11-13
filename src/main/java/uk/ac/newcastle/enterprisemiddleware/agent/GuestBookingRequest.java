@@ -4,7 +4,7 @@ import javax.validation.constraints.*;
 import java.util.Date;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class GuestBookingRequest {
 

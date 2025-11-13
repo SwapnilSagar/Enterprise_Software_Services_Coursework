@@ -7,7 +7,7 @@ import uk.ac.newcastle.enterprisemiddleware.dto.customer.CustomerDTO;
 import java.util.Date;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @Data
 public class HotelBookMapDTO {

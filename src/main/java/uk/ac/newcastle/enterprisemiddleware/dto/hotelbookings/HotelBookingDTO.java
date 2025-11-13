@@ -7,7 +7,7 @@ import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelDTO;
 import java.util.Date;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class HotelBookingDTO {
     private Long id;

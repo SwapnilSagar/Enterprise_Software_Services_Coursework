@@ -4,7 +4,7 @@ import uk.ac.newcastle.enterprisemiddleware.hotelbooking.HotelBooking;
 import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelDTO;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class HotelBookingMapper {
 

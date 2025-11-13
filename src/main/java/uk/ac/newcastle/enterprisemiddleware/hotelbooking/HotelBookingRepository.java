@@ -5,7 +5,7 @@ import uk.ac.newcastle.enterprisemiddleware.repository.GenricRepository;
 import javax.enterprise.context.RequestScoped;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @RequestScoped
 public class HotelBookingRepository extends GenricRepository<HotelBooking, Long> {

@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @NoArgsConstructor
 @Entity

@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @NoArgsConstructor
 @Entity

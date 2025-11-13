@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @Dependent
 public class GlobalBookingService {

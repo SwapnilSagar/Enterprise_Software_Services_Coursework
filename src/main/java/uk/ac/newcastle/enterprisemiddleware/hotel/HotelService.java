@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @Dependent
 public class HotelService {

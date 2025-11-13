@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 public class HotelBookingRequest {
 

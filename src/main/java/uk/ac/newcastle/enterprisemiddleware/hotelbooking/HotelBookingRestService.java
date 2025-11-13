@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @Path("/hotel-booking")
 @Consumes(MediaType.APPLICATION_JSON)

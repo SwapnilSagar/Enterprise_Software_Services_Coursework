@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @NoArgsConstructor
 @Entity

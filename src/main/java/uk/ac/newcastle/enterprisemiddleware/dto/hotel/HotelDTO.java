@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @Data
 public class HotelDTO {

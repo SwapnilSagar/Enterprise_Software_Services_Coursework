@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * <p>A simple POJO to hold the details of an actual error that will be marshaled into JSON by jackson.</p>
  *
- * @author hugofirth
+ * @author Swapnil Sagar
  */
 @RegisterForReflection
 public class ErrorMessage {

@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @RegisterRestClient(baseUri = "https://csc-8104-mayank-kunwar-crt-9690097516-dev.apps.rm3.7wse.p1.openshiftapps.com/")
 @Path("/hotel")

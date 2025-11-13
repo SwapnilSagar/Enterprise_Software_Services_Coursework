@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * @Dependent — CDI scope meaning a new instance is created every time it’s injected.
- * It’s lightweight and appropriate for stateless services.
+ * @Dependent — CDI scope creates a new instance every time it’s injected.
+ * Appropriate for stateless services and it’s lightweight.
  *
- * @author Mayank Kunwar
+ * @author Swapnil Sagar
  * */
 @Dependent
 public class CustomerService {
