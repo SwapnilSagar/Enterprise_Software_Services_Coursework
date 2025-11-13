@@ -1,12 +1,12 @@
-package uk.ac.newcastle.enterprisemiddleware.agent;
+package uk.ac.newcastle.enterprisemiddleware.travelagent;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import uk.ac.newcastle.enterprisemiddleware.agent.client.FlightClient;
-import uk.ac.newcastle.enterprisemiddleware.agent.client.HotelClient;
-import uk.ac.newcastle.enterprisemiddleware.agent.client.TaxiClient;
+import uk.ac.newcastle.enterprisemiddleware.travelagent.client.Taxi2Client;
+import uk.ac.newcastle.enterprisemiddleware.travelagent.client.HotelClient;
+import uk.ac.newcastle.enterprisemiddleware.travelagent.client.TaxiClient;
 import uk.ac.newcastle.enterprisemiddleware.customer.Customer;
 import uk.ac.newcastle.enterprisemiddleware.customer.CustomerService;
 import uk.ac.newcastle.enterprisemiddleware.util.GlobalBookingUtils;
@@ -40,7 +40,7 @@ public class BookingAgentRestService {
 
     @Inject
     @RestClient
-    FlightClient flightClient;
+    Taxi2Client taxi2Client;
 
     @Inject
     @RestClient
@@ -65,19 +65,19 @@ public class BookingAgentRestService {
         String globalBookingId = GlobalBookingUtils.getBookingId();
         GlobalBooking booking = GlobalBookingUtils.getBookingDetails(globalBookingId,
                 request.getFutureDate(), customerService.getCustomerById(request.getCustomerID()));
-        Map<String, Boolean> bookingStatus = new HashMap<>(Map.of(
-                "flight", false,
+        Map<String, Object> bookingStatus = new HashMap<>(Map.of(
+                "taxi2", false,
                 "hotel", false,
                 "taxi", false
         ));
         try {
-            Response flightResponse = attemptBooking("flight", () ->
-                    flightClient.book(GlobalBookingUtils.getFlightBookingRequest(globalBookingId, request)), bookingStatus);
-            Response hotelResponse = attemptBooking("hotel", () ->
-                    hotelClient.book(GlobalBookingUtils.getHotelBookingRequest(globalBookingId, request)), bookingStatus);
-            Response taxiResponse = attemptBooking("taxi", () ->
+            String taxi2Response = attemptBooking("taxi2", () ->
+                    taxi2Client.bookTaxi2(GlobalBookingUtils.getTaxi2BookingRequest(globalBookingId, request)), bookingStatus);
+            String hotelResponse = attemptBooking("hotel", () ->
+                    hotelClient.bookHotel(GlobalBookingUtils.getHotelBookingRequest(globalBookingId, request)), bookingStatus);
+            String taxiResponse = attemptBooking("taxi", () ->
                     taxiClient.bookTaxi(GlobalBookingUtils.getTaxiBookingRequest(globalBookingId, request)), bookingStatus);
-            GlobalBookingUtils.updateBookingDetails(booking, flightResponse, hotelResponse, taxiResponse);
+            GlobalBookingUtils.updateBookingDetails(booking, taxi2Response, hotelResponse, taxiResponse);
             booking.setStatus(GlobalStatus.SUCCESS);
             if(isRollBackRequired(bookingStatus)) {
                 rollback(globalBookingId, bookingStatus);
@@ -90,13 +90,13 @@ public class BookingAgentRestService {
             booking.setStatus(GlobalStatus.FAILED);
             globalBookingService.updateBooking(booking);
             rollback(globalBookingId, bookingStatus);
-            return Response.serverError().entity(booking).build();
+            return Response.serverError().entity(bookingStatus).build();
         }
     }
 
-    private boolean isRollBackRequired(Map<String, Boolean> bookingStatus) {
-        for(Boolean wasBooked: bookingStatus.values()){
-            if (!wasBooked) {
+    private boolean isRollBackRequired(Map<String, Object> bookingStatus) {
+        for(Object wasBooked: bookingStatus.values()){
+            if (wasBooked instanceof Boolean && !((Boolean) wasBooked)) {
                 return true;
             }
         }
@@ -104,20 +104,24 @@ public class BookingAgentRestService {
     }
 
     /** Helper for safe booking attempts */
-    private Response attemptBooking(String service, Supplier<Response> action, Map<String, Boolean> statusMap) {
+    private String attemptBooking(String service, Supplier<Response> action, Map<String, Object> statusMap) {
         Response response = action.get();
-        if (response.getStatus() != 200) {
+        int status = response.getStatus();
+        String entity = response.readEntity(String.class);
+        logger.info("response: " + entity);
+        if (status/100 != 2) {
+            statusMap.put(service + "BookingFailed", entity);
             throw new RestServiceException(service + " booking failed");
         }
         statusMap.put(service, true);
-        return response;
+        return entity;
     }
 
     /** Rollback any successful bookings */
-    private void rollback(String globalBookingId, Map<String, Boolean> status) {
-        rollbackIf(status.get("taxi"), "Taxi", () -> taxiClient.delete(globalBookingId));
-        rollbackIf(status.get("hotel"), "Hotel", () -> hotelClient.delete(globalBookingId));
-        rollbackIf(status.get("flight"), "Flight", () -> flightClient.delete(globalBookingId));
+    private void rollback(String globalBookingId, Map<String, Object> status) {
+        rollbackIf((Boolean) status.get("taxi"), "Taxi", () -> taxiClient.delete(globalBookingId));
+        rollbackIf((Boolean) status.get("hotel"), "Hotel", () -> hotelClient.delete(globalBookingId));
+        rollbackIf((Boolean) status.get("taxi2"), "taxi2", () -> taxi2Client.delete(globalBookingId));
     }
 
     /** Safe rollback with logging */
@@ -139,7 +143,7 @@ public class BookingAgentRestService {
         try {
             customerService.createCustomer(customer);
             Response response = booking(GlobalBookingUtils.getBookingRequest(request, customer.getId()));
-            if(response.getStatus() != 200){
+            if(response.getStatus() != 200) {
                 safeDeleteCustomer(customer.getId());
                 return Response.serverError()
                         .entity(response.getEntity())
@@ -163,6 +167,7 @@ public class BookingAgentRestService {
 
     @DELETE
     @Path("/cancel/{globalBookingId}")
+    @Transactional
     public Response cancelBooking(@PathParam("globalBookingId") String globalBookingId) {
         GlobalBooking booking = globalBookingService.getBookingById(globalBookingId);
         if (booking == null) {
@@ -172,7 +177,7 @@ public class BookingAgentRestService {
         }
 
         try {
-            safeDelete("Flight", () -> flightClient.delete(globalBookingId));
+            safeDelete("taxi2", () -> taxi2Client.delete(globalBookingId));
             safeDelete("Hotel", () -> hotelClient.delete(globalBookingId));
             safeDelete("Taxi", () -> taxiClient.delete(globalBookingId));
 

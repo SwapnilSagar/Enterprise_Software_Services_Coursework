@@ -1,4 +1,4 @@
-package uk.ac.newcastle.enterprisemiddleware.agent;
+package uk.ac.newcastle.enterprisemiddleware.travelagent;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ public class GlobalBookingRequest {
     private Date futureDate;
 
     @NotNull
-    private Long flightID;
+    private Long taxi2ID;
 
     @NotNull
     private Long taxiID;
@@ -32,12 +32,12 @@ public class GlobalBookingRequest {
         this.futureDate = futureDate;
     }
 
-    public @NotNull Long getFlightID() {
-        return flightID;
+    public @NotNull Long getTaxi2ID() {
+        return taxi2ID;
     }
 
-    public void setFlightID(@NotNull Long flightID) {
-        this.flightID = flightID;
+    public void setTaxi2ID(@NotNull Long taxi2ID) {
+        this.taxi2ID = taxi2ID;
     }
 
     public @NotNull Long getTaxiID() {

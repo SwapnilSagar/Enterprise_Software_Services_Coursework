@@ -4,8 +4,6 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import uk.ac.newcastle.enterprisemiddleware.dto.customer.CustomerDTO;
-import uk.ac.newcastle.enterprisemiddleware.dto.customer.CustomerMapper;
 import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
@@ -58,10 +56,10 @@ public class CustomerRestService {
             description = "Returns JSON array of all stored Consumer Booking Objects.")
     public Response retrieveAllCustomersBookingInfo() {
         List<Customer> customers = customerService.getAllCustomersInfo();
-        List<CustomerDTO> customerDTOs = customers.stream()
+        List<CustomerPayload> customerPayloads = customers.stream()
                 .map(CustomerMapper::toDTO)
                 .collect(Collectors.toList());
-        return Response.ok(customerDTOs).build();
+        return Response.ok(customerPayloads).build();
     }
 
     @POST

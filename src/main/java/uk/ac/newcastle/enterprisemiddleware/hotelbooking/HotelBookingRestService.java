@@ -6,10 +6,8 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import uk.ac.newcastle.enterprisemiddleware.customer.CustomerRestService;
-import uk.ac.newcastle.enterprisemiddleware.dto.hotelbookings.HotelBookingDTO;
-import uk.ac.newcastle.enterprisemiddleware.dto.hotelbookings.HotelBookingMapper;
-import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelDTO;
-import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelMapper;
+import uk.ac.newcastle.enterprisemiddleware.hotel.HotelPayload;
+import uk.ac.newcastle.enterprisemiddleware.hotel.HotelMapper;
 import uk.ac.newcastle.enterprisemiddleware.hotel.Hotel;
 import uk.ac.newcastle.enterprisemiddleware.hotel.HotelNotFoundException;
 import uk.ac.newcastle.enterprisemiddleware.hotel.HotelRestService;
@@ -20,7 +18,6 @@ import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -105,7 +102,7 @@ public class HotelBookingRestService {
         hotelBooking.setGlobalBookingId(request.getGlobalBookingId());
         Response response = hotelRestService.retrieveHotelById(request.getHotelId());
         if (response.getStatus() == 200 && response.hasEntity()) {
-            Hotel hotel = HotelMapper.toHotel(response.readEntity(HotelDTO.class));
+            Hotel hotel = HotelMapper.toHotel(response.readEntity(HotelPayload.class));
             if (hotel == null) return null;
             hotelBooking.setHotel(hotel);
         } else {
@@ -122,7 +119,7 @@ public class HotelBookingRestService {
     @Path("/")
     @Operation(summary = "Fetch all bookings")
     public Response getAllBookings() {
-        List<HotelBookingDTO> bookingDTOS = hotelBookingService.getAllBookings()
+        List<HotelBookingPayload> bookingDTOS = hotelBookingService.getAllBookings()
                 .stream()
                 .map(HotelBookingMapper::toDTO)
                 .collect(Collectors.toList());

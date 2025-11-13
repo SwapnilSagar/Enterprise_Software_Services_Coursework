@@ -1,7 +1,6 @@
-package uk.ac.newcastle.enterprisemiddleware.dto.hotel;
+package uk.ac.newcastle.enterprisemiddleware.hotel;
 
 import uk.ac.newcastle.enterprisemiddleware.hotelbooking.HotelBooking;
-import uk.ac.newcastle.enterprisemiddleware.hotel.Hotel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
  * */
 public class HotelMapper {
 
-    public static Hotel toHotel(HotelDTO dto){
+    public static Hotel toHotel(HotelPayload dto){
         Hotel hotel = new Hotel();
         hotel.setId(dto.getId());
         hotel.setName(dto.getName());
@@ -20,14 +19,14 @@ public class HotelMapper {
         return hotel;
     }
 
-    public static HotelDTO toDTO(Hotel hotel){
-        HotelDTO dto = new HotelDTO();
+    public static HotelPayload toDTO(Hotel hotel){
+        HotelPayload dto = new HotelPayload();
         dto.setId(hotel.getId());
         dto.setName(hotel.getName());
         dto.setPhoneNumber(hotel.getPhoneNumber());
         dto.setPostcode(hotel.getPostcode());
         if(hotel.getBookings() != null){
-            List<HotelBookMapDTO> bookMapDTOS = hotel.getBookings().stream()
+            List<HotelBookMapPayload> bookMapDTOS = hotel.getBookings().stream()
                     .map(HotelMapper::toBookingDTO)
                     .collect(Collectors.toList());
             dto.setBookings(bookMapDTOS);
@@ -36,8 +35,8 @@ public class HotelMapper {
         return dto;
     }
 
-    private static HotelBookMapDTO toBookingDTO(HotelBooking booking) {
-        HotelBookMapDTO dto = new HotelBookMapDTO();
+    private static HotelBookMapPayload toBookingDTO(HotelBooking booking) {
+        HotelBookMapPayload dto = new HotelBookMapPayload();
         dto.setId(booking.getId());
         dto.setBookingDate(booking.getBookingDate());
         dto.setStatus(booking.getStatus());

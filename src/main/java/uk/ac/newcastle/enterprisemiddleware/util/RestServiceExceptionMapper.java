@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 /**
  * <p>Handler object to convert {@link RestServiceException} exception into an actual {@link Response} containing JSON
- * so we can get a nice friendly error message, easily parsable by our API clients.</p>
+ * so we can get error message, easily parsable by our API clients.</p>
  *
  * @author Swapnil Sagar
  */

@@ -6,25 +6,16 @@ import javax.inject.Named;
 import java.util.logging.Logger;
 
 /**
- * This class uses CDI to alias Java EE resources, such as the persistence context, to CDI beans
- */
+ * @author Swapnil Sagar
+ * */
+
 public class Resources {
-//
-//    @Produces
-//    @PersistenceContext(unitName = "contacts_pu")
-//    private EntityManager em;
 
     @Produces
     @Named("logger")
     public Logger produceLog(InjectionPoint injectionPoint) {
         return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName());
     }
-//
-//    @Produces
-//    @Named("mapper")
-//    public ObjectMapper produceMapper() {
-//        return new ObjectMapper();
-//    }
 
 }
 

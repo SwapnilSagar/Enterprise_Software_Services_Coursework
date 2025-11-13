@@ -2,6 +2,10 @@ package uk.ac.newcastle.enterprisemiddleware.hotelbooking.exception;
 
 import javax.validation.ValidationException;
 
+/**
+ * @author Swapnil Sagar
+ * */
+
 public class BookingDateConflictException  extends ValidationException {
 
     public BookingDateConflictException(String message) {

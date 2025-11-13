@@ -5,6 +5,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Swapnil Sagar
+ * */
+
 public class RestServiceException extends RuntimeException implements
         Serializable {
 

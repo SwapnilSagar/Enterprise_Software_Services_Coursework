@@ -1,4 +1,4 @@
-package uk.ac.newcastle.enterprisemiddleware.dto.hotel;
+package uk.ac.newcastle.enterprisemiddleware.customer;
 
 import lombok.Data;
 
@@ -8,12 +8,12 @@ import java.util.List;
  * @author Swapnil Sagar
  * */
 @Data
-public class HotelDTO {
+public class CustomerPayload {
     private Long id;
     private String name;
-    private String postcode;
+    private String email;
     private String phoneNumber;
-    private List<HotelBookMapDTO> bookings;
+    private List<CustomerBookMapPayload> bookings;
 
     public Long getId() {
         return id;
@@ -31,12 +31,12 @@ public class HotelDTO {
         this.name = name;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumber() {
@@ -47,11 +47,11 @@ public class HotelDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<HotelBookMapDTO> getBookings() {
+    public List<CustomerBookMapPayload> getBookings() {
         return bookings;
     }
 
-    public void setBookings(List<HotelBookMapDTO> bookings) {
+    public void setBookings(List<CustomerBookMapPayload> bookings) {
         this.bookings = bookings;
     }
 }

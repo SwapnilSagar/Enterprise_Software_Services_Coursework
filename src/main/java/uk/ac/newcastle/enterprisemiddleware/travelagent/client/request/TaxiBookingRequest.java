@@ -1,4 +1,4 @@
-package uk.ac.newcastle.enterprisemiddleware.agent.client.request;
+package uk.ac.newcastle.enterprisemiddleware.travelagent.client.request;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
@@ -8,33 +8,34 @@ import java.util.Date;
 /**
  * @author Swapnil Sagar
  * */
-public class FlightBookingRequest {
+public class TaxiBookingRequest {
 
-    @NotNull @NotEmpty
-    private String globalBookingId;
+    @NotNull
+    @NotEmpty
+    private String globalId;
 
-    @NotNull(message = "Flight ID is required")
-    private long flightId;
+    @NotNull(message = "Taxi ID is required")
+    private long taxiId;
 
     @NotNull(message = "Booking date is required")
     @Future(message = "Booking date must be in the future")
     private Date bookingDate;
 
-    public @NotNull @NotEmpty String getGlobalBookingId() {
-        return globalBookingId;
+    public @NotNull @NotEmpty String getGlobalId() {
+        return globalId;
     }
 
-    public void setGlobalBookingId(@NotNull @NotEmpty String globalBookingId) {
-        this.globalBookingId = globalBookingId;
+    public void setGlobalId(@NotNull @NotEmpty String globalId) {
+        this.globalId = globalId;
     }
 
-    @NotNull(message = "Flight ID is required")
-    public long getFlightId() {
-        return flightId;
+    @NotNull(message = "Taxi ID is required")
+    public long getTaxiId() {
+        return taxiId;
     }
 
-    public void setFlightId(@NotNull(message = "Flight ID is required") long flightId) {
-        this.flightId = flightId;
+    public void setTaxiId(@NotNull(message = "Taxi ID is required") long taxiId) {
+        this.taxiId = taxiId;
     }
 
     public @NotNull(message = "Booking date is required") @Future(message = "Booking date must be in the future") Date getBookingDate() {
@@ -47,9 +48,9 @@ public class FlightBookingRequest {
 
     @Override
     public String toString() {
-        return "FlightBookingRequest{" +
-                "globalBookingId='" + globalBookingId + '\'' +
-                ", flightId=" + flightId +
+        return "TaxiBookingRequest{" +
+                "globalId='" + globalId + '\'' +
+                ", taxiId=" + taxiId +
                 ", bookingDate=" + bookingDate +
                 '}';
     }

@@ -4,8 +4,6 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelDTO;
-import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelMapper;
 import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
@@ -58,10 +56,10 @@ public class HotelRestService {
             description = "Returns JSON array of all stored Hotel Booking Objects.")
     public Response retrieveAllHotelBookingInfo() {
         List<Hotel> hotelList = hotelService.getAllHotelInfo();
-        List<HotelDTO> hotelDTOS = hotelList.stream()
+        List<HotelPayload> hotelPayloads = hotelList.stream()
                 .map(HotelMapper::toDTO)
                 .collect(Collectors.toList());
-        return Response.ok(hotelDTOS).build();
+        return Response.ok(hotelPayloads).build();
     }
 
     @POST

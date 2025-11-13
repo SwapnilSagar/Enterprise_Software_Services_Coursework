@@ -3,6 +3,10 @@ package uk.ac.newcastle.enterprisemiddleware.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author Swapnil Sagar
+ * */
+
 public class JsonUtils {
     private static final ObjectMapper mapper = new ObjectMapper();
 

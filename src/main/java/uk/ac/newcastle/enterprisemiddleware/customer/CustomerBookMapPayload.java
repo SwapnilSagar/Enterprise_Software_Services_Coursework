@@ -1,8 +1,8 @@
-package uk.ac.newcastle.enterprisemiddleware.dto.customer;
+package uk.ac.newcastle.enterprisemiddleware.customer;
 
 import lombok.Data;
-import uk.ac.newcastle.enterprisemiddleware.agent.BookingEntity;
-import uk.ac.newcastle.enterprisemiddleware.agent.GlobalStatus;
+import uk.ac.newcastle.enterprisemiddleware.travelagent.BookingEntity;
+import uk.ac.newcastle.enterprisemiddleware.travelagent.GlobalStatus;
 
 import java.util.Date;
 
@@ -10,7 +10,7 @@ import java.util.Date;
  * @author Swapnil Sagar
  * */
 @Data
-public class CustomerBookMapDTO {
+public class CustomerBookMapPayload {
     private String id;
     private GlobalStatus status;
     private Date bookingDate;

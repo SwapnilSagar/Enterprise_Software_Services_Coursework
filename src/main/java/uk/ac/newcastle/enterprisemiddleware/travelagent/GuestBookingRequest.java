@@ -1,4 +1,4 @@
-package uk.ac.newcastle.enterprisemiddleware.agent;
+package uk.ac.newcastle.enterprisemiddleware.travelagent;
 
 import javax.validation.constraints.*;
 import java.util.Date;

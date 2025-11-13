@@ -1,8 +1,8 @@
-package uk.ac.newcastle.enterprisemiddleware.agent;
+package uk.ac.newcastle.enterprisemiddleware.travelagent;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.NoArgsConstructor;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import uk.ac.newcastle.enterprisemiddleware.customer.Customer;
 import uk.ac.newcastle.enterprisemiddleware.util.JsonUtils;
 
@@ -47,6 +47,7 @@ public class GlobalBooking implements Serializable {
     private String bookingJson;
 
     @Transient
+    @Schema(hidden = true)
     private BookingEntity bookingEntity;
 
     public String getId() {

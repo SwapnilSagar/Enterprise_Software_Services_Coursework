@@ -2,6 +2,10 @@ package uk.ac.newcastle.enterprisemiddleware.hotel;
 
 import javax.validation.ValidationException;
 
+/**
+ * @author Swapnil Sagar
+ * */
+
 public class HotelNotFoundException  extends ValidationException {
 
     public HotelNotFoundException(String message) {

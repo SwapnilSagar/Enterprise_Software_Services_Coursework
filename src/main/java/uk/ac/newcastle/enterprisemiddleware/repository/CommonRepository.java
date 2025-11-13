@@ -12,14 +12,14 @@ import java.util.Map;
 /**
  * @author Swapnil Sagar
  * */
-public class GenricRepository<T, ID> {
+public class CommonRepository<T, ID> {
 
     @Inject
     EntityManager entityManager;
 
     private final Class<T> entityClass;
 
-    public GenricRepository(Class<T> entityClass) {
+    public CommonRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

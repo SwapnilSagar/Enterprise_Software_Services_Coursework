@@ -3,7 +3,7 @@ package uk.ac.newcastle.enterprisemiddleware.customer;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.NoArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import uk.ac.newcastle.enterprisemiddleware.agent.GlobalBooking;
+import uk.ac.newcastle.enterprisemiddleware.travelagent.GlobalBooking;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
