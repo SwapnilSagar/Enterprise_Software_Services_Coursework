@@ -1,9 +1,13 @@
 package uk.ac.newcastle.enterprisemiddleware.hotelbooking;
 
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.exception.BookingDateConflictException;
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.exception.InvalidBookingDateException;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -26,7 +30,22 @@ public class HotelBookingService {
     }
 
     public HotelBooking createBooking(HotelBooking booking) throws Exception {
+        Date bookingDate = booking.getBookingDate();
+        if (bookingDate.before(new Date(System.currentTimeMillis()))) {
+            throw new InvalidBookingDateException("Booking date is before current date");
+        }
+        if(bookingAlreadyExist(booking.getHotel().getId(), bookingDate)){
+            throw new BookingDateConflictException("Booking date is already exist");
+        }
         return hotelBookingRepository.create(booking);
+    }
+
+    private boolean bookingAlreadyExist(Long id, Date bookingDate) {
+        String jpql = "SELECT b FROM HotelBooking b WHERE b.bookingDate = :bookingDate AND b.hotel.id = :id";
+        List<HotelBooking> bookings = hotelBookingRepository.getAllRelatedRecords(jpql,
+                Map.of("bookingDate", bookingDate, "id", id));
+        return !bookings.isEmpty();
+
     }
 
     public HotelBooking updateBooking(HotelBooking booking) {

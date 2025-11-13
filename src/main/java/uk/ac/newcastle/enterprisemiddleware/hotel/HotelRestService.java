@@ -46,7 +46,7 @@ public class HotelRestService {
         Hotel hotel = hotelService.getHotelById(id);
         if (hotel == null) {
             // If no hotel found, return 404
-            throw new RestServiceException("No hotel with ID " + id + " was found!", Response.Status.NOT_FOUND);
+            throw new HotelNotFoundException("No hotel with ID " + id + " was found!");
         }
         logger.info("Id:"+ id +" . hotel: "+ hotel.toString());
         return Response.ok(HotelMapper.toDTO(hotel)).build();

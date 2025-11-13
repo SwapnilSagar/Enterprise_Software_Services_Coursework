@@ -11,7 +11,10 @@ import uk.ac.newcastle.enterprisemiddleware.dto.hotelbookings.HotelBookingMapper
 import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelDTO;
 import uk.ac.newcastle.enterprisemiddleware.dto.hotel.HotelMapper;
 import uk.ac.newcastle.enterprisemiddleware.hotel.Hotel;
+import uk.ac.newcastle.enterprisemiddleware.hotel.HotelNotFoundException;
 import uk.ac.newcastle.enterprisemiddleware.hotel.HotelRestService;
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.exception.BookingDateConflictException;
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.exception.InvalidBookingDateException;
 import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
@@ -22,6 +25,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -56,7 +60,7 @@ public class HotelBookingRestService {
     })
     @Transactional
     public Response createBooking(@Parameter(description = "Booking request data", required = true)
-                                      @Valid HotelBookingRequest request) throws Exception {
+                                      HotelBookingRequest request) throws Exception {
         if (request == null) {
             throw new RestServiceException("Invalid booking request", Response.Status.BAD_REQUEST);
         }
@@ -75,6 +79,18 @@ public class HotelBookingRestService {
             return Response.status(Response.Status.CREATED)
                     .entity(HotelBookingMapper.toDTO(createdBooking))
                     .build();
+        } catch (HotelNotFoundException ex){
+            throw new RestServiceException("Bad Request",
+                    Map.of("InvalidHotelID", "Hotel id = " + request.getHotelId() + " does not exist"),
+                    Response.Status.BAD_REQUEST, ex);
+        } catch (BookingDateConflictException ex){
+            throw new RestServiceException("Bad Request",
+                    Map.of("HotelBookingDateConflict", "Hotel booking already exists on this date"),
+                    Response.Status.BAD_REQUEST, ex);
+        } catch (InvalidBookingDateException ex){
+            throw new RestServiceException("Bad Request",
+                    Map.of("InvalidHotelBookingDate", "Hotel booking date is invalid"),
+                    Response.Status.BAD_REQUEST, ex);
         } catch (RestServiceException e) {
             throw e;
         } catch (Exception e) {
