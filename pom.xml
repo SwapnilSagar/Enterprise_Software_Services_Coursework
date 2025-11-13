@@ -15,6 +15,7 @@
     <quarkus.platform.version>2.10.3.Final</quarkus.platform.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+    <lombok.version>1.18.34</lombok.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -83,6 +84,12 @@
       <artifactId>quarkus-test-h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -112,14 +119,13 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire-plugin.version}</version>
-          <configuration>
-              <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-              <systemPropertyVariables>
-                  <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                  <maven.home>${maven.home}</maven.home>
-              </systemPropertyVariables>
-          </configuration>
+        <version>${surefire-plugin.version}</version>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <maven.home>${maven.home}</maven.home>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
