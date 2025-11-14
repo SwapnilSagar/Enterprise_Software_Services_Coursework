@@ -51,7 +51,7 @@ public class HotelService {
 
     public boolean deleteHotel(Long id){
         logger.info("Deleting Hotel with ID: " + id);
-        String jpql = "SELECT b FROM HotelBooking b WHERE b.id = :id";
+        String jpql = "SELECT b FROM Hotel b WHERE b.id = :id";
         List<Hotel> bookings = hotelRepository.getAllRelatedRecords(jpql,
                 Map.of("id", id));
 

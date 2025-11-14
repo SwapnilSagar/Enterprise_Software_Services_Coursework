@@ -120,7 +120,7 @@ public class HotelRestService {
     }
 
     @DELETE
-    @Path("/{Id}")
+    @Path("/{id}")
     @Operation(description = "Delete a Hotel from the database via local hotel ID")
     @APIResponses(value = {
             @APIResponse(responseCode = "204", description = "Hotel successfully deleted"),
@@ -130,7 +130,7 @@ public class HotelRestService {
     @Transactional
     public Response deleteHotel(@Parameter(description = "Id of Hotel to be removed", required = true)
                                     @Schema(minimum = "0")
-                                    @PathParam("Id") Long id){
+                                    @PathParam("id") Long id){
         try {
             boolean deleted = hotelService.deleteHotel(id);;
 
