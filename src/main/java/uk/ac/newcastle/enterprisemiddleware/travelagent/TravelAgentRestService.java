@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * */
 @Path("/agent")
 @ApplicationScoped
-public class BookingAgentRestService {
+public class TravelAgentRestService {
 
     @Inject
     @Named("logger")
