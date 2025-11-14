@@ -120,14 +120,34 @@ public class HotelRestService {
     }
 
     @DELETE
-    @Operation(description = "Delete Hotel from the database")
+    @Path("/{Id}")
+    @Operation(description = "Delete a Hotel from the database via local hotel ID")
     @APIResponses(value = {
-            @APIResponse(responseCode = "204", description = "Hotel deleted successfully."),
-            @APIResponse(responseCode = "500", description = "An unexpected error occurred whilst processing the request")
+            @APIResponse(responseCode = "204", description = "Hotel successfully deleted"),
+            @APIResponse(responseCode = "404", description = "Hotel with given ID not found"),
+            @APIResponse(responseCode = "500", description = "Unexpected error occurred")
     })
     @Transactional
-    public Response deleteHotel(@Parameter(description = "", required = true) Long id){
-        hotelService.deleteHotel(id);
-        return Response.noContent().build();
+    public Response deleteHotel(@Parameter(description = "Id of Hotel to be removed", required = true)
+                                    @Schema(minimum = "0")
+                                    @PathParam("Id") Long id){
+        try {
+            boolean deleted = hotelService.deleteHotel(id);;
+
+            if (!deleted) {
+                // Booking not found, return 404
+                throw new RestServiceException(
+                        "No Hotel with ID " + id + " was found!",
+                        Response.Status.NOT_FOUND
+                );
+            }
+
+            // Successfully deleted, return 204 No Content
+            return Response.noContent().build();
+
+        } catch (Exception e) {
+            // Handle generic exceptions
+            throw new RestServiceException("Unexpected error occurred while deleting booking", e);
+        }
     }
 }

@@ -1,10 +1,14 @@
 package uk.ac.newcastle.enterprisemiddleware.hotel;
 
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.HotelBooking;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -45,8 +49,15 @@ public class HotelService {
         hotelRepository.create(hotel);
     }
 
-    public void deleteHotel(Long id){
+    public boolean deleteHotel(Long id){
         logger.info("Deleting Hotel with ID: " + id);
-        hotelRepository.delete(hotelRepository.getRecordById(id));
+        String jpql = "SELECT b FROM HotelBooking b WHERE b.id = :id";
+        List<Hotel> bookings = hotelRepository.getAllRelatedRecords(jpql,
+                Map.of("id", id));
+
+        if (bookings.isEmpty()) {
+            throw new EntityNotFoundException("No HotelBooking found with id " + id);
+        }
+        return hotelRepository.delete(hotelRepository.getRecordById(id)) != null;
     }
 }
