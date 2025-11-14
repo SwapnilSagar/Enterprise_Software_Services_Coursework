@@ -30,8 +30,19 @@ public class HotelService {
         return hotelRepository.getAllRelatedRecords(jpql, null);
     }
 
+    public List<Hotel> getAllHotels(){
+        String jpql = "SELECT DISTINCT t FROM Hotel t ";
+        return hotelRepository.getAllRelatedRecords(jpql, null);
+    }
+
     public Hotel getHotelById(long id){
         return hotelRepository.getRecordById(id);
+    }
+
+    public Hotel findByPhoneNumber(String phoneNumber) {
+        // Assumes your GenricRepository has a method like getRecordByField(String fieldName, Object value)
+        // If not, you'll need to add a custom method to HotelRepository
+        return hotelRepository.getRecordByField("phoneNumber", phoneNumber);
     }
 
     public void createHotel(Hotel hotel) throws Exception {

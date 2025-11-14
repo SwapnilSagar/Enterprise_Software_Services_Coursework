@@ -53,6 +53,7 @@ public class HotelBookingRestService {
     @APIResponses(value = {
             @APIResponse(responseCode = "201", description = "Booking created successfully."),
             @APIResponse(responseCode = "400", description = "Invalid booking request"),
+            @APIResponse(responseCode = "409", description = "Booking already exists for this hotel and date"),
             @APIResponse(responseCode = "500", description = "Unexpected error occurred")
     })
     @Transactional

@@ -1,6 +1,8 @@
 package uk.ac.newcastle.enterprisemiddleware.customer;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
@@ -8,12 +10,17 @@ import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -65,7 +72,10 @@ public class CustomerRestService {
     @POST
     @Operation(description = "Add new Customer to the database")
     @APIResponses(value = {
-            @APIResponse(responseCode = "201", description = "Customer created successfully."),
+            @APIResponse(responseCode = "201", description = "Customer created successfully.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CustomerPayload.class))), // Return DTO
+            @APIResponse(responseCode = "400", description = "Invalid Customer data supplied"),
+            @APIResponse(responseCode = "409", description = "Customer with this email already exists"),
             @APIResponse(responseCode = "500", description = "An unexpected error occurred whilst processing the request")
     })
     @Transactional
@@ -81,6 +91,23 @@ public class CustomerRestService {
             customer.setBookings(null);
             customerService.createCustomer(customer);
             builder = Response.status(Response.Status.CREATED).entity(customer);
+        } catch (ConstraintViolationException e) {
+            // Handle bean validation issues
+            Map<String, String> responseObj = new HashMap<>();
+            for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+                responseObj.put(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            throw new RestServiceException("Bad Request: Validation failed", responseObj, Response.Status.BAD_REQUEST, e);
+
+        } catch (PersistenceException e) {
+            // Handle unique constraint violation (email)
+            if (e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+                Map<String, String> responseObj = new HashMap<>();
+                responseObj.put("email", "A customer with this email already exists");
+                throw new RestServiceException("Conflict: Email exists", responseObj, Response.Status.CONFLICT, e);
+            }
+            // Handle other generic persistence exceptions
+            throw new RestServiceException(e);
         } catch (Exception e) {
             // Handle generic exceptions
             throw new RestServiceException(e);

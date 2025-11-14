@@ -2,9 +2,11 @@ package uk.ac.newcastle.enterprisemiddleware.repository;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +58,25 @@ public class CommonRepository<T, ID> {
 
     public T getRecordById(ID id){
         return entityManager.find(entityClass, id);
+    }
+
+    /**
+     * Finds a single record by a specific field and value.
+     * @param fieldName The name of the field in the entity (e.g., "email" or "phoneNumber")
+     * @param value The value to search for
+     * @return The found entity, or null if not found
+     */
+    public T getRecordByField(String fieldName, Object value) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(entityClass);
+        Root<T> root = cq.from(entityClass);
+        cq.select(root).where(cb.equal(root.get(fieldName), value));
+
+        try {
+            return entityManager.createQuery(cq).getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Return null if no record is found
+        }
     }
 
     public T update(T t){
