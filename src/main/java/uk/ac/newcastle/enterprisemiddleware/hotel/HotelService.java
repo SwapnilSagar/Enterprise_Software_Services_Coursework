@@ -24,7 +24,7 @@ public class HotelService {
     @Inject
     HotelRepository hotelRepository;
 
-    public List<Hotel> getAllHotel(@Valid Hotel hotel){
+    public List<Hotel> getAllHotels(){
         return hotelRepository.getAllRecords();
     }
 
@@ -39,8 +39,6 @@ public class HotelService {
     }
 
     public Hotel findByPhoneNumber(String phoneNumber) {
-        // Assumes your GenricRepository has a method like getRecordByField(String fieldName, Object value)
-        // If not, you'll need to add a custom method to HotelRepository
         return hotelRepository.getRecordByField("phoneNumber", phoneNumber);
     }
 

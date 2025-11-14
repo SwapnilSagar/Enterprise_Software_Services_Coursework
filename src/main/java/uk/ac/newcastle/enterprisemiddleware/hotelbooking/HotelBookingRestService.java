@@ -17,6 +17,7 @@ import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -128,7 +129,7 @@ public class HotelBookingRestService {
     }
 
     @DELETE
-    @Path("/{bookingId}")
+    @Path("/{bookingId:[0-9]+}")
     @Operation(description = "Delete a Hotel-Booking from the database via local hotel booking ID")
     @APIResponses(value = {
             @APIResponse(responseCode = "204", description = "Booking successfully deleted"),
@@ -175,22 +176,14 @@ public class HotelBookingRestService {
             @Schema(minimum = "0")
             @PathParam("globalBookingId") String globalBookingId) {
 
+        logger.info("DELETE /bookings/" + globalBookingId + " requested");
         try {
-            boolean deleted = hotelBookingService.deleteByGlobalBookingId(globalBookingId);
-
-            if (!deleted) {
-                // Booking not found, return 404
-                throw new RestServiceException(
-                        "No HotelBooking with ID " + globalBookingId + " was found!",
-                        Response.Status.NOT_FOUND
-                );
-            }
-
-            // Successfully deleted, return 204 No Content
+            hotelBookingService.deleteByGlobalBookingId(globalBookingId);
             return Response.noContent().build();
 
+        } catch (EntityNotFoundException e) {
+            throw new RestServiceException(e.getMessage(), Response.Status.NOT_FOUND);
         } catch (Exception e) {
-            // Handle generic exceptions
             throw new RestServiceException("Unexpected error occurred while deleting booking", e);
         }
     }

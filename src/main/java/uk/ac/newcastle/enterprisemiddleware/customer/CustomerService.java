@@ -36,6 +36,9 @@ public class CustomerService {
     public Customer getCustomerById(long id){
         return customerRepository.getRecordById(id);
     }
+    public Customer findByEmail(String email) {
+        return customerRepository.getRecordByField("email", email);
+    }
 
     public void createCustomer(Customer customer) throws Exception {
         logger.info("Creating customer: " + customer.toString());
@@ -44,6 +47,9 @@ public class CustomerService {
 
     public void delete(Long id){
         logger.info("Deleting Customer with ID: " + id);
-        customerRepository.delete(customerRepository.getRecordById(id));
+        Customer customer = customerRepository.getRecordById(id);
+        if (customer != null) {
+            customerRepository.delete(customer);
+        }
     }
 }

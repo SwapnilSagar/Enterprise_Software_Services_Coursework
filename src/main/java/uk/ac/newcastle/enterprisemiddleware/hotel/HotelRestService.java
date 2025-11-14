@@ -41,7 +41,7 @@ public class HotelRestService {
 
 
     @GET
-    @Path("/{id}")
+    @Path("/{id:[0-9]+}")
     @Operation(summary = "Fetch Hotel detail", description = "Returns JSON of stored Hotel Object using their ID.")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Hotel found"),
@@ -120,7 +120,7 @@ public class HotelRestService {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("/{id:[0-9]+}")
     @Operation(description = "Delete a Hotel from the database via local hotel ID")
     @APIResponses(value = {
             @APIResponse(responseCode = "204", description = "Hotel successfully deleted"),

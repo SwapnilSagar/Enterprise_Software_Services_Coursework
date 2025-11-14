@@ -40,7 +40,7 @@ public class CustomerRestService {
     CustomerService customerService;
 
     @GET
-    @Path("/{id}")
+    @Path("/{id:[0-9]+}")
     @Operation(summary = "Fetch Customer detail", description = "Returns JSON of stored Consumer Object using their ID.")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Customer found"),
