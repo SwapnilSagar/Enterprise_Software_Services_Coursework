@@ -15,6 +15,8 @@ public class GlobalBookingRequest {
     @NotNull
     private Long taxi2ID;
 
+
+
     @NotNull
     private Long taxiID;
 
@@ -40,6 +42,8 @@ public class GlobalBookingRequest {
         this.taxi2ID = taxi2ID;
     }
 
+
+
     public @NotNull Long getTaxiID() {
         return taxiID;
     }
@@ -48,6 +52,8 @@ public class GlobalBookingRequest {
         this.taxiID = taxiID;
     }
 
+
+
     public @NotNull Long getHotelID() {
         return hotelID;
     }
@@ -55,6 +61,8 @@ public class GlobalBookingRequest {
     public void setHotelID(@NotNull Long hotelID) {
         this.hotelID = hotelID;
     }
+
+
 
     public @NotNull Long getCustomerID() {
         return customerID;

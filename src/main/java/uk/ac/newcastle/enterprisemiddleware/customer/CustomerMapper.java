@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
  * @author Swapnil Sagar
  * */
 
-public class CustomerMapper {
+public class CustomerMapper
+{
 
     public static Customer toCustomer(CustomerPayload dto){
         Customer customer = new Customer();
@@ -31,7 +32,8 @@ public class CustomerMapper {
         dto.setName(customer.getName());
         dto.setEmail(customer.getEmail());
         dto.setPhoneNumber(customer.getPhoneNumber());
-        if (customer.getBookings() != null) {
+        if (customer.getBookings() != null)
+        {
             List<CustomerBookMapPayload> bookingDTOs = customer.getBookings().stream()
                     .map(CustomerMapper::toBookingDTO)
                     .collect(Collectors.toList());
@@ -40,7 +42,8 @@ public class CustomerMapper {
         return dto;
     }
 
-    private static CustomerBookMapPayload toBookingDTO(GlobalBooking booking) {
+    private static CustomerBookMapPayload toBookingDTO(GlobalBooking booking)
+    {
         CustomerBookMapPayload dto = new CustomerBookMapPayload();
         dto.setId(booking.getId());
         dto.setBookingDate(booking.getBookingDate());
@@ -48,18 +51,22 @@ public class CustomerMapper {
         if (booking.getBookingEntity() != null){
             BookingEntity bookingEntity = new BookingEntity();
 
-            if (booking.getBookingEntity().getTaxi() != null) {
+            if (booking.getBookingEntity().getTaxi() != null)
+            {
 
                 TaxiBookingResponse bTaxi = JsonUtils.fromJson(JsonUtils.toJson(booking.getBookingEntity().getTaxi()), TaxiBookingResponse.class);
                 bookingEntity.setTaxi(bTaxi);
+
             }
             if (booking.getBookingEntity().getTaxi2() != null) {
                 Taxi2BookingResponse bTaxi2 = JsonUtils.fromJson(JsonUtils.toJson(booking.getBookingEntity().getTaxi2()), Taxi2BookingResponse.class);
                 bookingEntity.setTaxi2(bTaxi2);
             }
-            if (booking.getBookingEntity().getHotel() != null) {
+            if (booking.getBookingEntity().getHotel() != null)
+            {
                 HotelBookingResponse bHotel = JsonUtils.fromJson(JsonUtils.toJson(booking.getBookingEntity().getHotel()), HotelBookingResponse.class);
                 bookingEntity.setHotel(bHotel);
+
             }
             dto.setBookingEntity(bookingEntity);
         }

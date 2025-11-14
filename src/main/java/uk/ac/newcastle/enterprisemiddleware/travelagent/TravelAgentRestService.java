@@ -44,6 +44,8 @@ public class TravelAgentRestService {
     @RestClient
     Taxi2Client taxi2Client;
 
+
+
     @Inject
     @RestClient
     HotelClient hotelClient;
@@ -105,6 +107,8 @@ public class TravelAgentRestService {
         return false;
     }
 
+
+
     /** Helper for safe booking attempts */
     private String attemptBooking(String service, Supplier<Response> action, Map<String, Object> statusMap) {
         Response response;
@@ -129,6 +133,8 @@ public class TravelAgentRestService {
         return entity;
     }
 
+
+
     /** Rollback any successful bookings */
     private void rollback(String globalBookingId, Map<String, Object> status) {
         rollbackIf((Boolean) status.get("taxi"), "Taxi", () -> taxiClient.delete(globalBookingId));
@@ -146,6 +152,8 @@ public class TravelAgentRestService {
             logger.warning(serviceName + " rollback failed: " + e.getMessage());
         }
     }
+
+
 
     @POST
     @Path("/guest-booking")
@@ -166,6 +174,8 @@ public class TravelAgentRestService {
             throw new RuntimeException(e);
         }
     }
+
+
 
     /** Helper to safely delete a customer and log any failure */
     private void safeDeleteCustomer(Long customerId) {
@@ -206,6 +216,8 @@ public class TravelAgentRestService {
         }
     }
 
+
+
     private void safeDelete(String serviceName, Runnable deleteAction) {
         try {
             deleteAction.run();
@@ -231,4 +243,6 @@ public class TravelAgentRestService {
         customerService.delete(customerId);
         return Response.noContent().build();
     }
+
+
 }

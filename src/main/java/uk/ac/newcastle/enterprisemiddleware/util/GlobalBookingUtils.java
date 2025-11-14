@@ -16,6 +16,8 @@ import java.util.UUID;
  * */
 public class GlobalBookingUtils {
 
+
+
     public static TaxiBookingRequest getTaxiBookingRequest(String globalBookingId,
                                                            GlobalBookingRequest globalBookingRequest) {
         TaxiBookingRequest req = new TaxiBookingRequest();
@@ -24,6 +26,8 @@ public class GlobalBookingUtils {
         req.setGlobalId(globalBookingId);
         return req;
     }
+
+
 
     public static TaxiBookingRequest getTaxi2BookingRequest(String globalBookingId,
                                                             GlobalBookingRequest globalBookingRequest) {
@@ -34,6 +38,8 @@ public class GlobalBookingUtils {
         return req;
     }
 
+
+
     public static HotelBookingRequest getHotelBookingRequest(String globalBookingId,
                                                              GlobalBookingRequest globalBookingRequest) {
         HotelBookingRequest req = new HotelBookingRequest();
@@ -42,6 +48,8 @@ public class GlobalBookingUtils {
         req.setGlobalBookingId(globalBookingId);
         return req;
     }
+
+
 
     public static void updateBookingDetails(GlobalBooking booking,
                                             String taxi2Response, String hotelResponse, String taxiResponse) {
@@ -55,6 +63,8 @@ public class GlobalBookingUtils {
 //        booking.setBookingEntity(entity);
         booking.setBookingJson(JsonUtils.toJson(entity));
     }
+
+
 
     public static GlobalBooking getBookingDetails(String globalBookingId, Date date, Customer customer) {
         GlobalBooking booking = new GlobalBooking();
@@ -73,6 +83,9 @@ public class GlobalBookingUtils {
         return customer;
     }
 
+
+
+
     public static GlobalBookingRequest getBookingRequest(GuestBookingRequest request, Long customerId) {
         GlobalBookingRequest req = new GlobalBookingRequest();
         req.setFutureDate(request.getFutureDate());
@@ -82,6 +95,8 @@ public class GlobalBookingUtils {
         req.setCustomerID(customerId);
         return req;
     }
+
+
 
     public static String getBookingId() {
         return UUID.randomUUID().toString()

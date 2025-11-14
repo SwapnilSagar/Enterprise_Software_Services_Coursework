@@ -10,13 +10,17 @@ import java.util.Date;
 public class HotelBookingPayload {
     private Long id;
     private Status status;
+
     private String globalBookingId;
+
     private HotelPayload hotel;
     private Date bookingDate;
 
     public Long getId() {
         return id;
     }
+
+
 
     public void setId(Long id) {
         this.id = id;
@@ -30,6 +34,8 @@ public class HotelBookingPayload {
         this.status = status;
     }
 
+
+
     public String getGlobalBookingId() {
         return globalBookingId;
     }
@@ -42,6 +48,8 @@ public class HotelBookingPayload {
         return hotel;
     }
 
+
+
     public void setHotel(HotelPayload hotel) {
         this.hotel = hotel;
     }
@@ -53,4 +61,6 @@ public class HotelBookingPayload {
     public void setBookingDate(Date bookingDate) {
         this.bookingDate = bookingDate;
     }
+
+
 }

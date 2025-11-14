@@ -7,17 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+
 /**
  * @Dependent — CDI scope creates a new instance every time it’s injected.
+ *
+ *
  * Appropriate for stateless services and it’s lightweight.
  *
  * @author Swapnil Sagar
  * */
+
 @Dependent
 public class CustomerService {
 
     @Inject
     @Named("logger")
+
     Logger logger;
 
     @Inject
@@ -26,6 +31,8 @@ public class CustomerService {
     public List<Customer> getAllCustomers(){
         return customerRepository.getAllRecords();
     }
+
+
 
     public List<Customer> getAllCustomersInfo(){
         String jpql = "SELECT DISTINCT c FROM Customer c " +
@@ -40,10 +47,14 @@ public class CustomerService {
         return customerRepository.getRecordByField("email", email);
     }
 
+
+
     public void createCustomer(Customer customer) throws Exception {
         logger.info("Creating customer: " + customer.toString());
         customerRepository.create(customer);
     }
+
+
 
     public void delete(Long id){
         logger.info("Deleting Customer with ID: " + id);

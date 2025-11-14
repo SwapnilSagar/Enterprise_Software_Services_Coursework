@@ -12,6 +12,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Taxi2BookingResponse {
     private long bookingId;
+
+
     private String globalId;
     private Taxi2 taxi;
     private Date bookingDate;
@@ -24,6 +26,8 @@ public class Taxi2BookingResponse {
         this.bookingId = bookingId;
     }
 
+
+
     public String getGlobalId() {
         return globalId;
     }
@@ -32,9 +36,13 @@ public class Taxi2BookingResponse {
         this.globalId = globalId;
     }
 
+
+
     public Taxi2 getTaxi() {
         return taxi;
     }
+
+
 
     public void setTaxi(Taxi2 taxi) {
         this.taxi = taxi;

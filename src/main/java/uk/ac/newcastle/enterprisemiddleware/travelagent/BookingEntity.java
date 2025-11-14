@@ -5,16 +5,25 @@ import uk.ac.newcastle.enterprisemiddleware.travelagent.client.response.Taxi2Boo
 import uk.ac.newcastle.enterprisemiddleware.travelagent.client.response.TaxiBookingResponse;
 
 /**
+ *
+ *
  * @author Swapnil Sagar
+ *
+ *
  * */
+
+
 public class BookingEntity {
     private Taxi2BookingResponse taxi2;
     private HotelBookingResponse hotel;
+
     private TaxiBookingResponse taxi;
 
     public Taxi2BookingResponse getTaxi2() {
         return taxi2;
     }
+
+
 
     public void setTaxi2(Taxi2BookingResponse taxi2) {
         this.taxi2 = taxi2;
@@ -28,6 +37,8 @@ public class BookingEntity {
         this.hotel = hotel;
     }
 
+
+
     public TaxiBookingResponse getTaxi() {
         return taxi;
     }
@@ -35,6 +46,8 @@ public class BookingEntity {
     public void setTaxi(TaxiBookingResponse taxi) {
         this.taxi = taxi;
     }
+
+
 
     @Override
     public String toString() {

@@ -9,10 +9,13 @@ import java.util.Date;
 /**
  * @author Swapnil Sagar
  * */
+
 @Data
-public class CustomerBookMapPayload {
+public class CustomerBookMapPayload
+{
     private String id;
     private GlobalStatus status;
+
     private Date bookingDate;
     private BookingEntity bookingEntity;
 
@@ -23,6 +26,7 @@ public class CustomerBookMapPayload {
     public void setId(String id) {
         this.id = id;
     }
+
 
     public GlobalStatus getStatus() {
         return status;

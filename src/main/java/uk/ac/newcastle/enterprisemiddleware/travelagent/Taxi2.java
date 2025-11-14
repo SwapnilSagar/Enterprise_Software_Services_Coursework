@@ -3,17 +3,23 @@ package uk.ac.newcastle.enterprisemiddleware.travelagent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
+ *
+ *
  * @author Swapnil Sagar
  * */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Taxi2 {
     private long taxiId;
     private String registrationNumber;
+
+
     private int seatsCount;
 
     public Long getTaxiId() {
         return taxiId;
     }
+
+
 
     public void setTaxiId(Long taxiId) {
         this.taxiId = taxiId;
@@ -30,6 +36,8 @@ public class Taxi2 {
     public int getSeatsCount() {
         return seatsCount;
     }
+
+
 
     public void setSeatsCount(int seatsCount) {
         this.seatsCount = seatsCount;

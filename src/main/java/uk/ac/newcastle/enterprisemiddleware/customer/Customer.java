@@ -17,9 +17,12 @@ import java.util.Objects;
  * */
 @NoArgsConstructor
 @Entity
+
+
 @Table(name = "customer", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @XmlRootElement
-public class Customer implements Serializable {
+public class Customer implements Serializable
+{
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -63,11 +66,13 @@ public class Customer implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setBookings(List<GlobalBooking> bookings) {
+    public void setBookings(List<GlobalBooking> bookings)
+    {
         this.bookings = bookings;
     }
 
-    public Long getId() {
+    public Long getId()
+    {
         return this.id;
     }
 
@@ -88,7 +93,8 @@ public class Customer implements Serializable {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Customer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
@@ -98,7 +104,8 @@ public class Customer implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;

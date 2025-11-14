@@ -12,6 +12,7 @@ public class HotelPayload {
     private Long id;
     private String name;
     private String postcode;
+
     private String phoneNumber;
     private List<HotelBookMapPayload> bookings;
 
@@ -27,6 +28,7 @@ public class HotelPayload {
         return name;
     }
 
+
     public void setName(String name) {
         this.name = name;
     }
@@ -38,6 +40,7 @@ public class HotelPayload {
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
+
 
     public String getPhoneNumber() {
         return phoneNumber;

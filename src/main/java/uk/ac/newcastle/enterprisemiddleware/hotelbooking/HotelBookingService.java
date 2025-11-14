@@ -16,14 +16,17 @@ import java.util.logging.Logger;
  * @author Swapnil Sagar
  * */
 @Dependent
-public class HotelBookingService {
+public class HotelBookingService
+{
 
     @Inject
     @Named("logger")
     Logger logger;
 
+
     @Inject
     HotelBookingRepository hotelBookingRepository;
+
 
     public List<HotelBooking> getAllBookings() {
         return hotelBookingRepository.getAllRecords();
@@ -40,6 +43,8 @@ public class HotelBookingService {
         return hotelBookingRepository.create(booking);
     }
 
+
+
     private boolean bookingAlreadyExist(Long id, Date bookingDate) {
         String jpql = "SELECT b FROM HotelBooking b WHERE b.bookingDate = :bookingDate AND b.hotel.id = :id";
         List<HotelBooking> bookings = hotelBookingRepository.getAllRelatedRecords(jpql,
@@ -47,6 +52,8 @@ public class HotelBookingService {
         return !bookings.isEmpty();
 
     }
+
+
 
     public HotelBooking updateBooking(HotelBooking booking) {
         hotelBookingRepository.update(booking);
@@ -62,6 +69,7 @@ public class HotelBookingService {
             throw new EntityNotFoundException("No HotelBooking found with id " + bookingId);
         }
 
+
         return hotelBookingRepository.delete(bookings.get(0)) != null;
     }
 
@@ -73,6 +81,8 @@ public class HotelBookingService {
         if (bookings.isEmpty()) {
             throw new EntityNotFoundException("No HotelBooking found with id " + globalBookingId);
         }
+
+
 
         return hotelBookingRepository.delete(bookings.get(0)) != null;
     }

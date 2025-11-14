@@ -21,6 +21,8 @@ public class CommonRepository<T, ID> {
 
     private final Class<T> entityClass;
 
+
+
     public CommonRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
@@ -35,6 +37,8 @@ public class CommonRepository<T, ID> {
         entityManager.persist(t);
         return t;
     }
+
+
 
     public List<T> getAllRecords(){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -53,6 +57,8 @@ public class CommonRepository<T, ID> {
         if(params != null){
             params.forEach(query::setParameter);
         }
+
+
         return query.getResultList();
     }
 
@@ -60,13 +66,16 @@ public class CommonRepository<T, ID> {
         return entityManager.find(entityClass, id);
     }
 
+
+
     /**
      * Finds a single record by a specific field and value.
      * @param fieldName The name of the field in the entity (e.g., "email" or "phoneNumber")
      * @param value The value to search for
      * @return The found entity, or null if not found
      */
-    public T getRecordByField(String fieldName, Object value) {
+    public T getRecordByField(String fieldName, Object value)
+    {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(entityClass);
         Root<T> root = cq.from(entityClass);
@@ -77,6 +86,8 @@ public class CommonRepository<T, ID> {
         } catch (NoResultException e) {
             return null; // Return null if no record is found
         }
+
+
     }
 
     public T update(T t){
@@ -84,8 +95,11 @@ public class CommonRepository<T, ID> {
         return t;
     }
 
+
+
     public T delete(T t) {
         entityManager.remove(entityManager.merge(t));
         return t;
     }
+
 }

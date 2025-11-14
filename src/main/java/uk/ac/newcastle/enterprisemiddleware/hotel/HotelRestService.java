@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 @Path("/hotel")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class HotelRestService {
+public class HotelRestService
+{
 
     @Inject
     @Named("logger")
@@ -50,7 +51,8 @@ public class HotelRestService {
     public Response retrieveHotelById(@Parameter(description = "ID of the Hotel to be fetched", required = true)
                                          @PathParam("id") long id) {
         Hotel hotel = hotelService.getHotelById(id);
-        if (hotel == null) {
+        if (hotel == null)
+        {
             // If no hotel found, return 404
             throw new HotelNotFoundException("No hotel with ID " + id + " was found!");
         }
@@ -62,13 +64,17 @@ public class HotelRestService {
     @Path("/bookings")
     @Operation(summary = "Fetch all Hotel with Booking details",
             description = "Returns JSON array of all stored Hotel Booking Objects.")
-    public Response retrieveAllHotelBookingInfo() {
+    public Response retrieveAllHotelBookingInfo()
+    {
         List<Hotel> hotelList = hotelService.getAllHotelInfo();
         List<HotelPayload> hotelPayloads = hotelList.stream()
                 .map(HotelMapper::toDTO)
                 .collect(Collectors.toList());
         return Response.ok(hotelPayloads).build();
+
     }
+
+
 
     @POST
     @Operation(description = "Add new Hotel to the database")
@@ -82,9 +88,11 @@ public class HotelRestService {
     @Transactional
     public Response createHotel(@Parameter(description = "", required = true)
                                    @Valid Hotel hotel){
-        if (hotel == null) {
+        if (hotel == null)
+        {
             throw new RestServiceException("Bad Request", Response.Status.BAD_REQUEST);
         }
+
         Response.ResponseBuilder builder;
         try {
             // Clear the ID if accidentally set
@@ -92,7 +100,8 @@ public class HotelRestService {
             hotel.setBookings(null);
             hotelService.createHotel(hotel);
             builder = Response.status(Response.Status.CREATED).entity(hotel);
-        } catch (ConstraintViolationException e) {
+        }
+        catch (ConstraintViolationException e) {
             // Handle bean validation issues
             Map<String, String> responseObj = new HashMap<>();
             for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
@@ -100,7 +109,8 @@ public class HotelRestService {
             }
             throw new RestServiceException("Bad Request: Validation failed", responseObj, Response.Status.BAD_REQUEST, e);
 
-        } catch (PersistenceException e) {
+        }
+        catch (PersistenceException e) {
             // Handle unique constraint violation (phone)
             if (e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
                 Map<String, String> responseObj = new HashMap<>();
@@ -111,7 +121,8 @@ public class HotelRestService {
             }
             // Handle other generic persistence exceptions
             throw new RestServiceException(e);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // Handle generic exceptions
             throw new RestServiceException(e);
         }
@@ -128,6 +139,7 @@ public class HotelRestService {
             @APIResponse(responseCode = "500", description = "Unexpected error occurred")
     })
     @Transactional
+
     public Response deleteHotel(@Parameter(description = "Id of Hotel to be removed", required = true)
                                     @Schema(minimum = "0")
                                     @PathParam("id") Long id){
@@ -142,12 +154,14 @@ public class HotelRestService {
                 );
             }
 
+
             // Successfully deleted, return 204 No Content
             return Response.noContent().build();
 
         } catch (Exception e) {
             // Handle generic exceptions
             throw new RestServiceException("Unexpected error occurred while deleting booking", e);
+
         }
     }
 }

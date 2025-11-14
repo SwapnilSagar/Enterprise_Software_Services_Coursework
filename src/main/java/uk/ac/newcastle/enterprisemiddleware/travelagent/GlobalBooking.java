@@ -23,10 +23,14 @@ import java.util.Objects;
 @XmlRootElement
 public class GlobalBooking implements Serializable {
 
+
+
     private static final long serialVersionUID = 1L;
 
     @Id
     private String id;
+
+
 
     @Column(name = "status")
     private GlobalStatus status = GlobalStatus.PENDING;
@@ -37,11 +41,15 @@ public class GlobalBooking implements Serializable {
     @JsonBackReference(value = "customer-bookings")
     private Customer customer;
 
+
+
     @NotNull
     @Future(message = "Booking date must be in the future")
     @Column(name = "booking_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date bookingDate;
+
+
 
     @Column(columnDefinition = "TEXT", name = "booking_entity")  // for H2
     private String bookingJson;
@@ -50,6 +58,8 @@ public class GlobalBooking implements Serializable {
     @Schema(hidden = true)
     private BookingEntity bookingEntity;
 
+
+
     public String getId() {
         return id;
     }
@@ -57,6 +67,8 @@ public class GlobalBooking implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+
 
     public GlobalStatus getStatus() {
         return status;
@@ -69,6 +81,8 @@ public class GlobalBooking implements Serializable {
     public String getBookingJson() {
         return bookingJson;
     }
+
+
 
     public void setBookingJson(String bookingJson) {
         this.bookingJson = bookingJson;
@@ -84,6 +98,8 @@ public class GlobalBooking implements Serializable {
         this.bookingJson = JsonUtils.toJson(bookingEntity);
     }
 
+
+
     public @NotNull Customer getCustomer() {
         return customer;
     }
@@ -92,6 +108,8 @@ public class GlobalBooking implements Serializable {
         this.customer = customer;
     }
 
+
+
     public @NotNull @Future(message = "Booking date must be in the future") Date getBookingDate() {
         return bookingDate;
     }
@@ -99,6 +117,8 @@ public class GlobalBooking implements Serializable {
     public void setBookingDate(@NotNull @Future(message = "Booking date must be in the future") Date bookingDate) {
         this.bookingDate = bookingDate;
     }
+
+
 
     @PrePersist
     @PreUpdate
@@ -122,6 +142,8 @@ public class GlobalBooking implements Serializable {
         GlobalBooking that = (GlobalBooking) o;
         return Objects.equals(id, that.id);
     }
+
+
 
     @Override
     public int hashCode() {

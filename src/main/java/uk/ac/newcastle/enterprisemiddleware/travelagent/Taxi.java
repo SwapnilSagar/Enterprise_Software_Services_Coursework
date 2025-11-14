@@ -14,6 +14,8 @@ public class Taxi {
     @JsonProperty("registration")
     private String registrationNumber;
 
+
+
     @JsonProperty("noOfSeats")
     private int seatsCount;
 
@@ -25,6 +27,8 @@ public class Taxi {
         this.taxiId = taxiId;
     }
 
+
+
     public String getRegistrationNumber() {
         return registrationNumber;
     }
@@ -32,6 +36,8 @@ public class Taxi {
     public void setRegistrationNumber(String registrationNumber) {
         this.registrationNumber = registrationNumber;
     }
+
+
 
     public int getSeatsCount() {
         return seatsCount;

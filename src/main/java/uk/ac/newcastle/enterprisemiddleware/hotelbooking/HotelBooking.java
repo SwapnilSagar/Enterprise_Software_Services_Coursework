@@ -17,9 +17,12 @@ import java.util.Objects;
  * */
 @NoArgsConstructor
 @Entity
+
 @Table(name = "hotel_booking", uniqueConstraints = @UniqueConstraint(columnNames = {"hotel_id", "global_booking_id", "booking_date"}))
 @XmlRootElement
 public class HotelBooking implements Serializable {
+
+
 
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +37,8 @@ public class HotelBooking implements Serializable {
     @Column(name = "status")
     private Status status = Status.PENDING;
 
+
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "hotel_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_HOTEL_ID"))
@@ -45,6 +50,8 @@ public class HotelBooking implements Serializable {
     @Column(name = "booking_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date bookingDate;
+
+
 
     public void setStatus(Status status) {
         this.status = status;
@@ -95,6 +102,8 @@ public class HotelBooking implements Serializable {
                 ", hotel=" + hotel +
                 ", bookingDate=" + bookingDate +
                 '}';
+
+
     }
 
     @Override
@@ -106,6 +115,8 @@ public class HotelBooking implements Serializable {
                 && Objects.equals(hotel, that.hotel)
                 && Objects.equals(bookingDate, that.bookingDate);
     }
+
+
 
     @Override
     public int hashCode() {

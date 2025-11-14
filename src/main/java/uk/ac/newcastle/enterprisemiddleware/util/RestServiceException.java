@@ -13,6 +13,8 @@ public class RestServiceException extends RuntimeException implements
         Serializable {
 
     private static final long serialVersionUID = 1264443812161L;
+
+
     private static final String defaultMsg = "An unexpected error occurred whilst processing the request";
 
     private final Map<String, String> reasons;
@@ -30,6 +32,8 @@ public class RestServiceException extends RuntimeException implements
         this.status = Response.Status.INTERNAL_SERVER_ERROR;
     }
 
+
+
     public RestServiceException(String msg, Response.Status status) {
         super(msg);
         this.reasons = new HashMap<>();
@@ -41,6 +45,8 @@ public class RestServiceException extends RuntimeException implements
         this.reasons = reasons;
         this.status = status;
     }
+
+
 
     public RestServiceException(Exception e) {
         super(defaultMsg, e);
@@ -59,6 +65,8 @@ public class RestServiceException extends RuntimeException implements
         this.reasons = new HashMap<>();
         this.status = status;
     }
+
+
 
     public RestServiceException(String msg, Map<String, String> reasons, Response.Status status, Exception e) {
         super(msg, e);

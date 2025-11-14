@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * @author Swapnil Sagar
+ *
+ *
  * */
 @NoArgsConstructor
 @Entity
@@ -26,11 +28,15 @@ public class Hotel implements Serializable {
     @Schema(hidden = true)
     private Long id;
 
+
+
     @NotNull
     @NotEmpty
     @Size(max = 49, message = "Name must be less than 50 characters")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "Name must contain only letters and spaces")
     private String name;
+
+
 
     @NotNull
     @Pattern(regexp = "^0\\d{10}$", message = "Must start with 0, contain only digits, and be 11 digits long")
@@ -43,10 +49,13 @@ public class Hotel implements Serializable {
     )
     private String postcode;
 
+
+
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "hotel-bookings")
     @Schema(hidden = true)
     private List<HotelBooking> bookings;
+
 
     public Long getId() {
         return id;
@@ -56,6 +65,7 @@ public class Hotel implements Serializable {
         this.id = id;
     }
 
+
     public @NotNull @NotEmpty @Size(max = 49, message = "Name must be less than 50 characters") @Pattern(regexp = "^[A-Za-z ]+$", message = "Name must contain only letters and spaces") String getName() {
         return name;
     }
@@ -64,6 +74,7 @@ public class Hotel implements Serializable {
         this.name = name;
     }
 
+
     public @NotNull @Pattern(regexp = "^0\\d{10}$", message = "Must start with 0, contain only digits, and be 11 digits long") String getPhoneNumber() {
         return phoneNumber;
     }
@@ -71,6 +82,8 @@ public class Hotel implements Serializable {
     public void setPhoneNumber(@NotNull @Pattern(regexp = "^0\\d{10}$", message = "Must start with 0, contain only digits, and be 11 digits long") String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+
 
     public String getPostcode() {
         return postcode;
@@ -87,12 +100,15 @@ public class Hotel implements Serializable {
         return bookings;
     }
 
+
+
     public void setBookings(List<HotelBooking> bookings) {
         this.bookings = bookings;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Hotel{" +
                 "id=" + id +
                 ", postcode='" + postcode + '\'' +

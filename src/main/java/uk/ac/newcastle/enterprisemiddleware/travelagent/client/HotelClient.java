@@ -10,9 +10,12 @@ import javax.ws.rs.core.Response;
 
 /**
  * @author Swapnil Sagar
+ *
+ *
  * */
 @RegisterRestClient(baseUri = "https://csc-8104-swapnil-sagar-swapnilsagar-dev.apps.rm1.0a51.p1.openshiftapps.com/")
 @Path("/hotel-booking")
+
 public interface HotelClient {
 
     @POST

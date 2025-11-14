@@ -14,8 +14,12 @@ public class TaxiBookingRequest {
     @NotEmpty
     private String globalId;
 
+
+
     @NotNull(message = "Taxi ID is required")
     private long taxiId;
+
+
 
     @NotNull(message = "Booking date is required")
     @Future(message = "Booking date must be in the future")
@@ -24,6 +28,8 @@ public class TaxiBookingRequest {
     public @NotNull @NotEmpty String getGlobalId() {
         return globalId;
     }
+
+
 
     public void setGlobalId(@NotNull @NotEmpty String globalId) {
         this.globalId = globalId;
@@ -42,9 +48,13 @@ public class TaxiBookingRequest {
         return bookingDate;
     }
 
+
+
     public void setBookingDate(@NotNull(message = "Booking date is required") @Future(message = "Booking date must be in the future") Date bookingDate) {
         this.bookingDate = bookingDate;
     }
+
+
 
     @Override
     public String toString() {

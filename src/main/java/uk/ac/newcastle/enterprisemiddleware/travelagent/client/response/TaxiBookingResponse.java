@@ -13,9 +13,13 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaxiBookingResponse {
     private long id;
+
+
     private Status status;
     private String globalBookingId;
     private Taxi taxi;
+
+
     private Date bookingDate;
 
     public long getId() {
@@ -25,6 +29,8 @@ public class TaxiBookingResponse {
     public void setId(long id) {
         this.id = id;
     }
+
+
 
     public Status getStatus() {
         return status;
@@ -49,6 +55,8 @@ public class TaxiBookingResponse {
     public void setTaxi(Taxi taxi) {
         this.taxi = taxi;
     }
+
+
 
     public Date getBookingDate() {
         return bookingDate;

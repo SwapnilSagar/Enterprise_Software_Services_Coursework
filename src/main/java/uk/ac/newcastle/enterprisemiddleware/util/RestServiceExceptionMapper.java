@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 @Provider
 public class RestServiceExceptionMapper implements ExceptionMapper<RestServiceException> {
 
+
+
     @Inject
     @Named("logger")
     Logger log;
@@ -32,6 +34,8 @@ public class RestServiceExceptionMapper implements ExceptionMapper<RestServiceEx
             root = root.getCause();
         }
 
+
+
         log.severe("Mapping RestServiceException with status " + e.getStatus() +
                 ", message: " + e.getMessage() + ", root cause: " + root);
         root.printStackTrace();
@@ -40,4 +44,6 @@ public class RestServiceExceptionMapper implements ExceptionMapper<RestServiceEx
                 .entity(new ErrorMessage(e.getMessage(), e.getReasons()));
         return builder.build();
     }
+
+
 }

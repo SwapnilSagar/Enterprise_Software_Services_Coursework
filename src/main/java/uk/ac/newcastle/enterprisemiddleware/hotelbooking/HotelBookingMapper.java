@@ -3,9 +3,14 @@ package uk.ac.newcastle.enterprisemiddleware.hotelbooking;
 import uk.ac.newcastle.enterprisemiddleware.hotel.HotelPayload;
 
 /**
+ *
+ *
  * @author Swapnil Sagar
- * */
-public class HotelBookingMapper {
+ *
+ *
+ **/
+public class HotelBookingMapper
+{
 
     public static HotelBookingPayload toDTO(HotelBooking booking){
         HotelBookingPayload dto = new HotelBookingPayload();
@@ -22,6 +27,7 @@ public class HotelBookingMapper {
             hotelPayload.setPostcode(booking.getHotel().getPostcode());
             dto.setHotel(hotelPayload);
         }
+
         return dto;
     }
 }

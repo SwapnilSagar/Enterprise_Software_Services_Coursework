@@ -28,12 +28,16 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
+ *
  * @author Swapnil Sagar
+ *
  * */
 @Path("/hotel-booking")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class HotelBookingRestService {
+
+public class HotelBookingRestService
+{
 
     @Inject
     @Named("logger")
@@ -63,6 +67,7 @@ public class HotelBookingRestService {
         if (request == null) {
             throw new RestServiceException("Invalid booking request", Response.Status.BAD_REQUEST);
         }
+
         try {
             // Convert request DTO to entity
             HotelBooking hotelBooking = createBookingReq(request);
@@ -78,21 +83,26 @@ public class HotelBookingRestService {
             return Response.status(Response.Status.CREATED)
                     .entity(HotelBookingMapper.toDTO(createdBooking))
                     .build();
-        } catch (HotelNotFoundException ex){
+        }
+        catch (HotelNotFoundException ex){
             throw new RestServiceException("Bad Request",
                     Map.of("InvalidHotelID", "Hotel id = " + request.getHotelId() + " does not exist"),
                     Response.Status.BAD_REQUEST, ex);
-        } catch (BookingDateConflictException ex){
+        }
+        catch (BookingDateConflictException ex){
             throw new RestServiceException("Bad Request",
                     Map.of("HotelBookingDateConflict", "Hotel booking already exists on this date"),
                     Response.Status.BAD_REQUEST, ex);
-        } catch (InvalidBookingDateException ex){
+        }
+        catch (InvalidBookingDateException ex){
             throw new RestServiceException("Bad Request",
                     Map.of("InvalidHotelBookingDate", "Hotel booking date is invalid"),
                     Response.Status.BAD_REQUEST, ex);
-        } catch (RestServiceException e) {
+        }
+        catch (RestServiceException e) {
             throw e;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // Wrap any unexpected errors
             throw new RestServiceException("Failed to create booking", e);
         }
@@ -156,7 +166,8 @@ public class HotelBookingRestService {
             // Successfully deleted, return 204 No Content
             return Response.noContent().build();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // Handle generic exceptions
             throw new RestServiceException("Unexpected error occurred while deleting booking", e);
         }
@@ -181,9 +192,11 @@ public class HotelBookingRestService {
             hotelBookingService.deleteByGlobalBookingId(globalBookingId);
             return Response.noContent().build();
 
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e) {
             throw new RestServiceException(e.getMessage(), Response.Status.NOT_FOUND);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RestServiceException("Unexpected error occurred while deleting booking", e);
         }
     }

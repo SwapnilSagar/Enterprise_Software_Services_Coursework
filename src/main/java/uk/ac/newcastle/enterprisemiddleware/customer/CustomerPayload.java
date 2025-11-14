@@ -8,10 +8,12 @@ import java.util.List;
  * @author Swapnil Sagar
  * */
 @Data
-public class CustomerPayload {
+public class CustomerPayload
+{
     private Long id;
     private String name;
     private String email;
+
     private String phoneNumber;
     private List<CustomerBookMapPayload> bookings;
 
@@ -22,6 +24,7 @@ public class CustomerPayload {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getName() {
         return name;
@@ -35,6 +38,7 @@ public class CustomerPayload {
         return email;
     }
 
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -42,6 +46,7 @@ public class CustomerPayload {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;

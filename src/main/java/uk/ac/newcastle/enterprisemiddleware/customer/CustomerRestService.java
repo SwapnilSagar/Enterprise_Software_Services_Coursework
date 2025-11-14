@@ -47,26 +47,33 @@ public class CustomerRestService {
             @APIResponse(responseCode = "404", description = "Customer with given ID not found")
     })
     public Response retrieveCustomerById(@Parameter(description = "ID of the Customer to be fetched", required = true)
-                                             @PathParam("id") long id) {
+                                             @PathParam("id") long id)
+
+    {
         Customer customer = customerService.getCustomerById(id);
         if (customer == null) {
             // If no customer found, return 404
+
             throw new RestServiceException("No Customer with ID " + id + " was found!", Response.Status.NOT_FOUND);
         }
         logger.info("Id:"+ id +" . Customer: "+ customer.toString());
+
         return Response.ok(CustomerMapper.toDTO(customer)).build();
+
     }
 
     @GET
     @Path("/bookings")
     @Operation(summary = "Fetch all Customer with Booking details",
             description = "Returns JSON array of all stored Consumer Booking Objects.")
-    public Response retrieveAllCustomersBookingInfo() {
+    public Response retrieveAllCustomersBookingInfo()
+    {
         List<Customer> customers = customerService.getAllCustomersInfo();
         List<CustomerPayload> customerPayloads = customers.stream()
                 .map(CustomerMapper::toDTO)
                 .collect(Collectors.toList());
         return Response.ok(customerPayloads).build();
+
     }
 
     @POST
@@ -80,12 +87,15 @@ public class CustomerRestService {
     })
     @Transactional
     public Response createCustomer(@Parameter(description = "", required = true)
-                                       @Valid Customer customer){
-        if (customer == null) {
+                                       @Valid Customer customer)
+    {
+        if (customer == null)
+        {
             throw new RestServiceException("Bad Request", Response.Status.BAD_REQUEST);
         }
         Response.ResponseBuilder builder;
-        try {
+        try
+        {
             // Clear the ID if accidentally set
             customer.setId(null);
             customer.setBookings(null);
@@ -108,11 +118,13 @@ public class CustomerRestService {
             }
             // Handle other generic persistence exceptions
             throw new RestServiceException(e);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // Handle generic exceptions
             throw new RestServiceException(e);
         }
         logger.info("createCustomer completed = " + customer);
+
         return builder.build();
     }
 }

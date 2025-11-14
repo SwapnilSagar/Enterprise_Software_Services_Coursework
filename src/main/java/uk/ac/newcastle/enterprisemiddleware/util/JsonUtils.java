@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Swapnil Sagar
+ *
+ *
  * */
 
-public class JsonUtils {
+public class JsonUtils
+{
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static String toJson(Object obj) {
@@ -18,11 +21,15 @@ public class JsonUtils {
         }
     }
 
+
+
     public static <T> T fromJson(String json, Class<T> clazz) {
         try {
             return mapper.readValue(json, clazz);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+
     }
 }
