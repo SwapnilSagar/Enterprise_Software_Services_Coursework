@@ -14,6 +14,7 @@ import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -32,6 +33,7 @@ import java.util.logging.Logger;
 public class BookingAgentRestService {
 
     @Inject
+    @Named("logger")
     Logger logger;
 
     @Inject
@@ -105,13 +107,23 @@ public class BookingAgentRestService {
 
     /** Helper for safe booking attempts */
     private String attemptBooking(String service, Supplier<Response> action, Map<String, Object> statusMap) {
-        Response response = action.get();
+        Response response;
+        String entity;
+        try {
+            response = action.get();
+            entity = response.readEntity(String.class);
+            logger.info("Response from " + service + ": " + entity);
+        } catch (Exception e) {
+            // This catches connection errors
+            logger.warning(service + " booking threw exception: " + e.getMessage());
+            statusMap.put(service + "BookingFailed", e.getMessage());
+            throw new RestServiceException(service + " booking failed", e);
+        }
+
         int status = response.getStatus();
-        String entity = response.readEntity(String.class);
-        logger.info("response: " + entity);
-        if (status/100 != 2) {
+        if (status < 200 || status >= 300) {
             statusMap.put(service + "BookingFailed", entity);
-            throw new RestServiceException(service + " booking failed");
+            throw new RestServiceException(service + " booking failed with status " + status);
         }
         statusMap.put(service, true);
         return entity;

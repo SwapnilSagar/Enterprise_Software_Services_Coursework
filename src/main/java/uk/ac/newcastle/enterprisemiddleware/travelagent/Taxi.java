@@ -1,14 +1,20 @@
 package uk.ac.newcastle.enterprisemiddleware.travelagent;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Swapnil Sagar
  * */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Taxi {
+    @JsonProperty("id")
     private long taxiId;
+
+    @JsonProperty("registration")
     private String registrationNumber;
+
+    @JsonProperty("noOfSeats")
     private int seatsCount;
 
     public Long getTaxiId() {
