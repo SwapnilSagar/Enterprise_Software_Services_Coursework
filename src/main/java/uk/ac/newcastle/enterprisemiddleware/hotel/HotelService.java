@@ -30,11 +30,6 @@ public class HotelService {
         return hotelRepository.getAllRelatedRecords(jpql, null);
     }
 
-    public List<Hotel> getAllHotels(){
-        String jpql = "SELECT DISTINCT t FROM Hotel t ";
-        return hotelRepository.getAllRelatedRecords(jpql, null);
-    }
-
     public Hotel getHotelById(long id){
         return hotelRepository.getRecordById(id);
     }

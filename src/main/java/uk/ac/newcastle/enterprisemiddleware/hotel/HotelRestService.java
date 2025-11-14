@@ -39,21 +39,6 @@ public class HotelRestService {
     @Inject
     HotelService hotelService;
 
-    @GET
-    @Operation(summary = "Fetch all Hotels (basic info)",
-            description = "Returns a JSON array of all stored Hotel objects.")
-    @APIResponses(value = {
-            @APIResponse(responseCode = "200", description = "Hotels retrieved",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HotelPayload[].class)))
-    })
-    public Response retrieveAllHotels() {
-        List<Hotel> hotels = hotelService.getAllHotels();
-        // Convert each Hotel Entity to a HotelDTO
-        List<HotelPayload> hotelDTOs = hotels.stream()
-                .map(HotelMapper::toDTO)
-                .collect(Collectors.toList());
-        return Response.ok(hotelDTOs).build();
-    }
 
     @GET
     @Path("/{id}")
