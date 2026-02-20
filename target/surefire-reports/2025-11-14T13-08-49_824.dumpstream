@@ -1,0 +1,5 @@
+# Created at 2025-11-14T13:08:51.569
+Boot Manifest-JAR contains absolute paths in classpath 'D:\Enterprise\CSC8104\CSC8104-Swapnil-Sagar\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
