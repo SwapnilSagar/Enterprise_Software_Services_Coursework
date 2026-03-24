@@ -3,10 +3,10 @@ package uk.ac.newcastle.enterprisemiddleware.travelagent;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author Swapnil Sagar
@@ -53,12 +53,11 @@ public class GlobalBookingService {
     }
 
     public List<String> getBookingIdByCustomerId(Long customerId) {
+        // FIX #11 — Replaced manual for-loop + ArrayList with stream().map().collect() for cleaner, idiomatic Java.
         String jpql = "SELECT b from GlobalBooking b WHERE b.customer.id = :id";
         List<GlobalBooking> globalBookings = repository.getAllRelatedRecords(jpql, Map.of("id", customerId));
-        List<String> bookingIds = new ArrayList<>();
-        for(GlobalBooking booking: globalBookings){
-            bookingIds.add(booking.getId());
-        }
-        return bookingIds;
+        return globalBookings.stream()
+                .map(GlobalBooking::getId)
+                .collect(Collectors.toList());
     }
 }

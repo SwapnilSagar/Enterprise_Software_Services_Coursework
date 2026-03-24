@@ -9,8 +9,7 @@ import java.util.Map;
  * @author Swapnil Sagar
  * */
 
-public class RestServiceException extends RuntimeException implements
-        Serializable {
+public class RestServiceException extends RuntimeException implements Serializable {
 
     private static final long serialVersionUID = 1264443812161L;
 

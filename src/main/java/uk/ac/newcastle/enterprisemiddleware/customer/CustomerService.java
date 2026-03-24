@@ -4,7 +4,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -54,9 +53,14 @@ public class CustomerService {
         customerRepository.create(customer);
     }
 
+    // FIX #2 — Added updateCustomer(): previously there was no way to update an existing customer.
+    // This method allows the REST PUT endpoint to modify name, email, or phone number in the DB.
+    public Customer updateCustomer(Customer customer) {
+        logger.info("Updating customer: " + customer.toString());
+        return customerRepository.update(customer);
+    }
 
-
-    public void delete(Long id){
+    public void delete(Long id) {
         logger.info("Deleting Customer with ID: " + id);
         Customer customer = customerRepository.getRecordById(id);
         if (customer != null) {

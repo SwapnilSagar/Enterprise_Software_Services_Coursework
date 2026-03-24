@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import uk.ac.newcastle.enterprisemiddleware.DTO.HotelDTO;
 import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
@@ -67,10 +68,10 @@ public class HotelRestService
     public Response retrieveAllHotelBookingInfo()
     {
         List<Hotel> hotelList = hotelService.getAllHotelInfo();
-        List<HotelPayload> hotelPayloads = hotelList.stream()
+        List<HotelDTO> hotelDTOS = hotelList.stream()
                 .map(HotelMapper::toDTO)
                 .collect(Collectors.toList());
-        return Response.ok(hotelPayloads).build();
+        return Response.ok(hotelDTOS).build();
 
     }
 
@@ -80,7 +81,7 @@ public class HotelRestService
     @Operation(description = "Add new Hotel to the database")
     @APIResponses(value = {
             @APIResponse(responseCode = "201", description = "Hotel created successfully.",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HotelPayload.class))), // Return DTO
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HotelDTO.class))), // Return DTO
             @APIResponse(responseCode = "400", description = "Invalid Hotel data supplied"),
             @APIResponse(responseCode = "409", description = "Hotel with this phone number already exists"),
             @APIResponse(responseCode = "500", description = "An unexpected error occurred whilst processing the request")
@@ -99,7 +100,9 @@ public class HotelRestService
             hotel.setId(null);
             hotel.setBookings(null);
             hotelService.createHotel(hotel);
-            builder = Response.status(Response.Status.CREATED).entity(hotel);
+            // FIX #5 — Return HotelDTO instead of raw entity. Previously the raw JPA entity was returned
+            // on POST, while GET returned a DTO — inconsistent API contract that risked exposing internal fields.
+            builder = Response.status(Response.Status.CREATED).entity(HotelMapper.toDTO(hotel));
         }
         catch (ConstraintViolationException e) {
             // Handle bean validation issues
@@ -130,6 +133,42 @@ public class HotelRestService
         return builder.build();
     }
 
+    // FIX #2 — Added PUT /{id} update endpoint. Previously there was no way to update an existing hotel
+    // via the API, making the CRUD API incomplete.
+    @PUT
+    @Path("/{id:[0-9]+}")
+    @Operation(description = "Update an existing Hotel in the database")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Hotel updated successfully.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HotelDTO.class))),
+            @APIResponse(responseCode = "400", description = "Invalid Hotel data supplied"),
+            @APIResponse(responseCode = "404", description = "Hotel with this ID does not exist"),
+            @APIResponse(responseCode = "500", description = "An unexpected error occurred whilst processing the request")
+    })
+    @Transactional
+    public Response updateHotel(
+            @Parameter(description = "ID of the Hotel to be updated", required = true)
+            @PathParam("id") long id,
+            @Valid Hotel hotel) {
+
+        if (hotelService.getHotelById(id) == null) {
+            throw new RestServiceException("No Hotel with ID " + id + " was found!", Response.Status.NOT_FOUND);
+        }
+        try {
+            hotel.setId(id);
+            Hotel updated = hotelService.updateHotel(hotel);
+            return Response.ok(HotelMapper.toDTO(updated)).build();
+        } catch (ConstraintViolationException e) {
+            Map<String, String> responseObj = new HashMap<>();
+            for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+                responseObj.put(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            throw new RestServiceException("Bad Request: Validation failed", responseObj, Response.Status.BAD_REQUEST, e);
+        } catch (Exception e) {
+            throw new RestServiceException(e);
+        }
+    }
+
     @DELETE
     @Path("/{id:[0-9]+}")
     @Operation(description = "Delete a Hotel from the database via local hotel ID")
@@ -139,29 +178,20 @@ public class HotelRestService
             @APIResponse(responseCode = "500", description = "Unexpected error occurred")
     })
     @Transactional
-
     public Response deleteHotel(@Parameter(description = "Id of Hotel to be removed", required = true)
                                     @Schema(minimum = "0")
-                                    @PathParam("id") Long id){
+                                    @PathParam("id") Long id) {
         try {
-            boolean deleted = hotelService.deleteHotel(id);;
-
+            boolean deleted = hotelService.deleteHotel(id);
             if (!deleted) {
-                // Booking not found, return 404
                 throw new RestServiceException(
                         "No Hotel with ID " + id + " was found!",
                         Response.Status.NOT_FOUND
                 );
             }
-
-
-            // Successfully deleted, return 204 No Content
             return Response.noContent().build();
-
         } catch (Exception e) {
-            // Handle generic exceptions
             throw new RestServiceException("Unexpected error occurred while deleting booking", e);
-
         }
     }
 }

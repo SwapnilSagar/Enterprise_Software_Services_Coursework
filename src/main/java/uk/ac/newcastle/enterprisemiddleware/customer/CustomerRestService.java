@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import uk.ac.newcastle.enterprisemiddleware.DTO.CustomerDTO;
 import uk.ac.newcastle.enterprisemiddleware.util.RestServiceException;
 
 import javax.inject.Inject;
@@ -69,10 +70,10 @@ public class CustomerRestService {
     public Response retrieveAllCustomersBookingInfo()
     {
         List<Customer> customers = customerService.getAllCustomersInfo();
-        List<CustomerPayload> customerPayloads = customers.stream()
+        List<CustomerDTO> customerDTOS = customers.stream()
                 .map(CustomerMapper::toDTO)
                 .collect(Collectors.toList());
-        return Response.ok(customerPayloads).build();
+        return Response.ok(customerDTOS).build();
 
     }
 
@@ -80,7 +81,7 @@ public class CustomerRestService {
     @Operation(description = "Add new Customer to the database")
     @APIResponses(value = {
             @APIResponse(responseCode = "201", description = "Customer created successfully.",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CustomerPayload.class))), // Return DTO
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CustomerDTO.class))), // Return DTO
             @APIResponse(responseCode = "400", description = "Invalid Customer data supplied"),
             @APIResponse(responseCode = "409", description = "Customer with this email already exists"),
             @APIResponse(responseCode = "500", description = "An unexpected error occurred whilst processing the request")
@@ -100,7 +101,9 @@ public class CustomerRestService {
             customer.setId(null);
             customer.setBookings(null);
             customerService.createCustomer(customer);
-            builder = Response.status(Response.Status.CREATED).entity(customer);
+            // FIX #4 — Return CustomerDTO instead of raw entity. Previously the raw JPA entity was returned,
+            // which is inconsistent with GET endpoints that return DTOs and risks leaking internal fields.
+            builder = Response.status(Response.Status.CREATED).entity(CustomerMapper.toDTO(customer));
         } catch (ConstraintViolationException e) {
             // Handle bean validation issues
             Map<String, String> responseObj = new HashMap<>();
@@ -124,7 +127,42 @@ public class CustomerRestService {
             throw new RestServiceException(e);
         }
         logger.info("createCustomer completed = " + customer);
-
         return builder.build();
+    }
+
+    // FIX #2 — Added PUT /{id} update endpoint. Previously there was no way to update an existing customer
+    // via the API, making the CRUD API incomplete.
+    @PUT
+    @Path("/{id:[0-9]+}")
+    @Operation(description = "Update an existing Customer in the database")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Customer updated successfully.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CustomerDTO.class))),
+            @APIResponse(responseCode = "400", description = "Invalid Customer data supplied"),
+            @APIResponse(responseCode = "404", description = "Customer with this ID does not exist"),
+            @APIResponse(responseCode = "500", description = "An unexpected error occurred whilst processing the request")
+    })
+    @Transactional
+    public Response updateCustomer(
+            @Parameter(description = "ID of the Customer to be updated", required = true)
+            @PathParam("id") long id,
+            @Valid Customer customer) {
+
+        if (customerService.getCustomerById(id) == null) {
+            throw new RestServiceException("No Customer with ID " + id + " was found!", Response.Status.NOT_FOUND);
+        }
+        try {
+            customer.setId(id);
+            Customer updated = customerService.updateCustomer(customer);
+            return Response.ok(CustomerMapper.toDTO(updated)).build();
+        } catch (ConstraintViolationException e) {
+            Map<String, String> responseObj = new HashMap<>();
+            for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+                responseObj.put(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            throw new RestServiceException("Bad Request: Validation failed", responseObj, Response.Status.BAD_REQUEST, e);
+        } catch (Exception e) {
+            throw new RestServiceException(e);
+        }
     }
 }

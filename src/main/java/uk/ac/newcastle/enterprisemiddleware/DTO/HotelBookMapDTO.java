@@ -1,8 +1,7 @@
-package uk.ac.newcastle.enterprisemiddleware.hotel;
+package uk.ac.newcastle.enterprisemiddleware.DTO;
 
 import lombok.Data;
 import uk.ac.newcastle.enterprisemiddleware.hotelbooking.Status;
-import uk.ac.newcastle.enterprisemiddleware.customer.CustomerPayload;
 
 import java.util.Date;
 
@@ -13,7 +12,7 @@ import java.util.Date;
  * */
 
 @Data
-public class HotelBookMapPayload
+public class HotelBookMapDTO
 {
     private Long id;
     private String txID;
@@ -21,7 +20,7 @@ public class HotelBookMapPayload
 
 
     private Date bookingDate;
-    private CustomerPayload customer;
+    private CustomerDTO customer;
 
     public Long getId() {
         return id;
@@ -60,11 +59,11 @@ public class HotelBookMapPayload
         this.bookingDate = bookingDate;
     }
 
-    public CustomerPayload getCustomer() {
+    public CustomerDTO getCustomer() {
         return customer;
     }
 
-    public void setCustomer(CustomerPayload customer) {
+    public void setCustomer(CustomerDTO customer) {
         this.customer = customer;
     }
 }

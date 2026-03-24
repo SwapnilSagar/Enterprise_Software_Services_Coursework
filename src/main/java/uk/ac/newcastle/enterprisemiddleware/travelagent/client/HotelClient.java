@@ -13,7 +13,10 @@ import javax.ws.rs.core.Response;
  *
  *
  * */
-@RegisterRestClient(baseUri = "https://csc-8104-swapnil-sagar-swapnilsagar-dev.apps.rm1.0a51.p1.openshiftapps.com/")
+// FIX #8 — Removed hardcoded baseUri from @RegisterRestClient.
+// The URL is already configured in application.properties via quarkus.rest-client.hotel-api.url.
+// Having it in two places risks a mismatch between environments (dev vs deployed).
+@RegisterRestClient(configKey = "hotel-api")
 @Path("/hotel-booking")
 
 public interface HotelClient {

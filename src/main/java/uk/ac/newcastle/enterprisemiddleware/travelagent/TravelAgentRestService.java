@@ -69,6 +69,17 @@ public class TravelAgentRestService {
         String globalBookingId = GlobalBookingUtils.getBookingId();
         GlobalBooking booking = GlobalBookingUtils.getBookingDetails(globalBookingId,
                 request.getFutureDate(), customerService.getCustomerById(request.getCustomerID()));
+
+        // FIX #3 — Persist the GlobalBooking as PENDING before attempting sub-bookings.
+        // Previously, the booking was only saved on success, so failed attempts left no audit record in the DB.
+        // Now we always have a DB record; we update its status to SUCCESS or FAILED after the outcome.
+        try {
+            globalBookingService.createBooking(booking);
+        } catch (Exception ex) {
+            logger.warning("Failed to persist initial GlobalBooking: " + ex.getMessage());
+            return Response.serverError().entity("Could not initialise booking record").build();
+        }
+
         Map<String, Object> bookingStatus = new HashMap<>(Map.of(
                 "taxi2", false,
                 "hotel", false,
@@ -83,11 +94,11 @@ public class TravelAgentRestService {
                     taxiClient.bookTaxi(GlobalBookingUtils.getTaxiBookingRequest(globalBookingId, request)), bookingStatus);
             GlobalBookingUtils.updateBookingDetails(booking, taxi2Response, hotelResponse, taxiResponse);
             booking.setStatus(GlobalStatus.SUCCESS);
-            if(isRollBackRequired(bookingStatus)) {
+            if (isRollBackRequired(bookingStatus)) {
+                booking.setStatus(GlobalStatus.FAILED);
                 rollback(globalBookingId, bookingStatus);
-            } else {
-                globalBookingService.createBooking(booking);
             }
+            globalBookingService.updateBooking(booking);
             return Response.ok(booking).build();
         } catch (Exception ex) {
             logger.warning("Booking failed: " + ex.getMessage());
@@ -198,32 +209,37 @@ public class TravelAgentRestService {
                     .build();
         }
 
-        try {
-            safeDelete("taxi2", () -> taxi2Client.delete(globalBookingId));
-            safeDelete("Hotel", () -> hotelClient.delete(globalBookingId));
-            safeDelete("Taxi", () -> taxiClient.delete(globalBookingId));
+        // FIX #13 — Track per-service deletion failures instead of swallowing them.
+        // Previously safeDelete() caught all exceptions silently and the endpoint always returned 200 OK,
+        // even if one or more services failed to cancel. Now failures are reported back to the caller.
+        Map<String, String> cancellationFailures = new HashMap<>();
 
-            booking.setStatus(GlobalStatus.CANCELLED);
-            globalBookingService.deleteBooking(booking.getId());
+        safeDelete("taxi2", () -> taxi2Client.delete(globalBookingId), cancellationFailures);
+        safeDelete("Hotel", () -> hotelClient.delete(globalBookingId), cancellationFailures);
+        safeDelete("Taxi", () -> taxiClient.delete(globalBookingId), cancellationFailures);
 
-            return Response.ok(booking).build();
-        } catch (Exception e) {
-//            booking.setStatus(GlobalStatus.FAILED);
-//            globalBookingService.updateBooking(booking);
+        if (!cancellationFailures.isEmpty()) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Cancellation failed: " + e.getMessage())
+                    .entity(Map.of("message", "Partial cancellation failure", "failures", cancellationFailures))
                     .build();
         }
+
+        booking.setStatus(GlobalStatus.CANCELLED);
+        globalBookingService.deleteBooking(booking.getId());
+        return Response.ok(booking).build();
     }
 
 
 
-    private void safeDelete(String serviceName, Runnable deleteAction) {
+    // FIX #13 — Overloaded safeDelete to accept a failure map instead of silently swallowing errors.
+    // Failures are now recorded per service so the caller can report partial cancellation issues.
+    private void safeDelete(String serviceName, Runnable deleteAction, Map<String, String> failures) {
         try {
             deleteAction.run();
             logger.info(serviceName + " booking deleted successfully");
         } catch (Exception e) {
             logger.warning(serviceName + " deletion failed: " + e.getMessage());
+            failures.put(serviceName, e.getMessage());
         }
     }
 

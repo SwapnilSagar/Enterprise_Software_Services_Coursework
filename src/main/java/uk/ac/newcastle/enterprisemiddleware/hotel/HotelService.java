@@ -1,12 +1,10 @@
 package uk.ac.newcastle.enterprisemiddleware.hotel;
 
-import uk.ac.newcastle.enterprisemiddleware.hotelbooking.HotelBooking;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -50,10 +48,16 @@ public class HotelService {
     public void createHotel(Hotel hotel) throws Exception {
         logger.info("Creating hotel: " + hotel.toString());
         hotelRepository.create(hotel);
-
     }
 
-    public boolean deleteHotel(Long id){
+    // FIX #2 — Added updateHotel(): previously there was no way to update an existing hotel record.
+    // This method allows the REST PUT endpoint to modify hotel name, phone, or postcode in the DB.
+    public Hotel updateHotel(Hotel hotel) {
+        logger.info("Updating hotel: " + hotel.toString());
+        return hotelRepository.update(hotel);
+    }
+
+    public boolean deleteHotel(Long id) {
         logger.info("Deleting Hotel with ID: " + id);
         String jpql = "SELECT b FROM Hotel b WHERE b.id = :id";
 

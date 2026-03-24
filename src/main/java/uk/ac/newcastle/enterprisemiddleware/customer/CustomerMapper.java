@@ -1,5 +1,7 @@
 package uk.ac.newcastle.enterprisemiddleware.customer;
 
+import uk.ac.newcastle.enterprisemiddleware.DTO.CustomerBookMapDTO;
+import uk.ac.newcastle.enterprisemiddleware.DTO.CustomerDTO;
 import uk.ac.newcastle.enterprisemiddleware.travelagent.BookingEntity;
 import uk.ac.newcastle.enterprisemiddleware.travelagent.GlobalBooking;
 import uk.ac.newcastle.enterprisemiddleware.travelagent.client.response.HotelBookingResponse;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 public class CustomerMapper
 {
 
-    public static Customer toCustomer(CustomerPayload dto){
+    public static Customer toCustomer(CustomerDTO dto){
         Customer customer = new Customer();
         customer.setId(dto.getId());
         customer.setName(dto.getName());
@@ -26,15 +28,15 @@ public class CustomerMapper
         return customer;
     }
 
-    public static CustomerPayload toDTO(Customer customer){
-        CustomerPayload dto = new CustomerPayload();
+    public static CustomerDTO toDTO(Customer customer){
+        CustomerDTO dto = new CustomerDTO();
         dto.setId(customer.getId());
         dto.setName(customer.getName());
         dto.setEmail(customer.getEmail());
         dto.setPhoneNumber(customer.getPhoneNumber());
         if (customer.getBookings() != null)
         {
-            List<CustomerBookMapPayload> bookingDTOs = customer.getBookings().stream()
+            List<CustomerBookMapDTO> bookingDTOs = customer.getBookings().stream()
                     .map(CustomerMapper::toBookingDTO)
                     .collect(Collectors.toList());
             dto.setBookings(bookingDTOs);
@@ -42,9 +44,9 @@ public class CustomerMapper
         return dto;
     }
 
-    private static CustomerBookMapPayload toBookingDTO(GlobalBooking booking)
+    private static CustomerBookMapDTO toBookingDTO(GlobalBooking booking)
     {
-        CustomerBookMapPayload dto = new CustomerBookMapPayload();
+        CustomerBookMapDTO dto = new CustomerBookMapDTO();
         dto.setId(booking.getId());
         dto.setBookingDate(booking.getBookingDate());
 

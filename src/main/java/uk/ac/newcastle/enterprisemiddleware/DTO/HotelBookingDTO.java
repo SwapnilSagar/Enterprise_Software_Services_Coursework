@@ -1,19 +1,19 @@
-package uk.ac.newcastle.enterprisemiddleware.hotelbooking;
+package uk.ac.newcastle.enterprisemiddleware.DTO;
 
-import uk.ac.newcastle.enterprisemiddleware.hotel.HotelPayload;
+import uk.ac.newcastle.enterprisemiddleware.hotelbooking.Status;
 
 import java.util.Date;
 
 /**
  * @author Swapnil Sagar
  * */
-public class HotelBookingPayload {
+public class HotelBookingDTO {
     private Long id;
     private Status status;
 
     private String globalBookingId;
 
-    private HotelPayload hotel;
+    private HotelDTO hotel;
     private Date bookingDate;
 
     public Long getId() {
@@ -44,13 +44,13 @@ public class HotelBookingPayload {
         this.globalBookingId = globalBookingId;
     }
 
-    public HotelPayload getHotel() {
+    public HotelDTO getHotel() {
         return hotel;
     }
 
 
 
-    public void setHotel(HotelPayload hotel) {
+    public void setHotel(HotelDTO hotel) {
         this.hotel = hotel;
     }
 

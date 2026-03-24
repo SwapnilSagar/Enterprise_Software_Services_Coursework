@@ -1,4 +1,4 @@
-package uk.ac.newcastle.enterprisemiddleware.customer;
+package uk.ac.newcastle.enterprisemiddleware.DTO;
 
 import lombok.Data;
 import uk.ac.newcastle.enterprisemiddleware.travelagent.BookingEntity;
@@ -11,7 +11,7 @@ import java.util.Date;
  * */
 
 @Data
-public class CustomerBookMapPayload
+public class CustomerBookMapDTO
 {
     private String id;
     private GlobalStatus status;

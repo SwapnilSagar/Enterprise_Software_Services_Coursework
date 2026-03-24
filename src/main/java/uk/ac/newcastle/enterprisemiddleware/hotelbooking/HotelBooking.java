@@ -6,6 +6,7 @@ import uk.ac.newcastle.enterprisemiddleware.hotel.Hotel;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -30,7 +31,9 @@ public class HotelBooking implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // FIX #7 — Added @NotEmpty: globalBookingId had only @NotNull, allowing empty strings as booking correlation IDs.
     @NotNull
+    @NotEmpty
     @Column(name = "global_booking_id")
     private String globalBookingId;
 

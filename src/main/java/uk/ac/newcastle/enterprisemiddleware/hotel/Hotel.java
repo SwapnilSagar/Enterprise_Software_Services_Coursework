@@ -43,6 +43,8 @@ public class Hotel implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    // FIX #15 — Added @NotNull: postcode was optional before, allowing hotels with no postcode to be persisted.
+    @NotNull
     @Pattern(
             regexp = "^[A-Za-z0-9]{6}$",
             message = "Postcode must be 6 alphanumeric characters"

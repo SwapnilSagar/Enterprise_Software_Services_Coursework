@@ -5,8 +5,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import uk.ac.newcastle.enterprisemiddleware.DTO.HotelBookingDTO;
 import uk.ac.newcastle.enterprisemiddleware.customer.CustomerRestService;
-import uk.ac.newcastle.enterprisemiddleware.hotel.HotelPayload;
+import uk.ac.newcastle.enterprisemiddleware.DTO.HotelDTO;
 import uk.ac.newcastle.enterprisemiddleware.hotel.HotelMapper;
 import uk.ac.newcastle.enterprisemiddleware.hotel.Hotel;
 import uk.ac.newcastle.enterprisemiddleware.hotel.HotelNotFoundException;
@@ -19,9 +20,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -90,14 +94,26 @@ public class HotelBookingRestService
                     Response.Status.BAD_REQUEST, ex);
         }
         catch (BookingDateConflictException ex){
+            // FIX #9 — Changed to 409 CONFLICT (was 400 Bad Request).
+            // A date conflict is not a malformed request; it's a business rule violation where the resource already exists.
             throw new RestServiceException("Bad Request",
                     Map.of("HotelBookingDateConflict", "Hotel booking already exists on this date"),
-                    Response.Status.BAD_REQUEST, ex);
+                    Response.Status.CONFLICT, ex);
         }
         catch (InvalidBookingDateException ex){
             throw new RestServiceException("Bad Request",
                     Map.of("InvalidHotelBookingDate", "Hotel booking date is invalid"),
                     Response.Status.BAD_REQUEST, ex);
+        }
+        // FIX #6 — Added explicit ConstraintViolationException handler so @Future and other bean
+        // validation failures on HotelBookingRequest return 400 Bad Request instead of falling through
+        // to the generic Exception handler (which returned 500).
+        catch (ConstraintViolationException ex) {
+            Map<String, String> responseObj = new HashMap<>();
+            for (ConstraintViolation<?> v : ex.getConstraintViolations()) {
+                responseObj.put(v.getPropertyPath().toString(), v.getMessage());
+            }
+            throw new RestServiceException("Bad Request: Validation failed", responseObj, Response.Status.BAD_REQUEST, ex);
         }
         catch (RestServiceException e) {
             throw e;
@@ -114,7 +130,7 @@ public class HotelBookingRestService
         hotelBooking.setGlobalBookingId(request.getGlobalBookingId());
         Response response = hotelRestService.retrieveHotelById(request.getHotelId());
         if (response.getStatus() == 200 && response.hasEntity()) {
-            Hotel hotel = HotelMapper.toHotel(response.readEntity(HotelPayload.class));
+            Hotel hotel = HotelMapper.toHotel(response.readEntity(HotelDTO.class));
             if (hotel == null) return null;
             hotelBooking.setHotel(hotel);
         } else {
@@ -131,7 +147,7 @@ public class HotelBookingRestService
     @Path("/")
     @Operation(summary = "Fetch all bookings")
     public Response getAllBookings() {
-        List<HotelBookingPayload> bookingDTOS = hotelBookingService.getAllBookings()
+        List<HotelBookingDTO> bookingDTOS = hotelBookingService.getAllBookings()
                 .stream()
                 .map(HotelBookingMapper::toDTO)
                 .collect(Collectors.toList());
@@ -153,22 +169,17 @@ public class HotelBookingRestService
             @PathParam("bookingId") long bookingId) {
 
         try {
-            boolean deleted = hotelBookingService.deleteBookingRecord(bookingId);
-
-            if (!deleted) {
-                // Booking not found, return 404
-                throw new RestServiceException(
-                        "No HotelBooking with ID " + bookingId + " was found!",
-                        Response.Status.NOT_FOUND
-                );
-            }
-
-            // Successfully deleted, return 204 No Content
+            // FIX #12 — deleteBookingRecord() now returns void and throws EntityNotFoundException on not-found.
+            // Previously the boolean return was dead code (always true or exception), now callers handle the exception.
+            hotelBookingService.deleteBookingRecord(bookingId);
             return Response.noContent().build();
 
-        }
-        catch (Exception e) {
-            // Handle generic exceptions
+        } catch (EntityNotFoundException e) {
+            throw new RestServiceException(
+                    "No HotelBooking with ID " + bookingId + " was found!",
+                    Response.Status.NOT_FOUND
+            );
+        } catch (Exception e) {
             throw new RestServiceException("Unexpected error occurred while deleting booking", e);
         }
     }

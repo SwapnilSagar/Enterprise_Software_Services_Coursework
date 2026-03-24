@@ -1,4 +1,4 @@
-package uk.ac.newcastle.enterprisemiddleware.hotel;
+package uk.ac.newcastle.enterprisemiddleware.DTO;
 
 import lombok.Data;
 
@@ -8,13 +8,13 @@ import java.util.List;
  * @author Swapnil Sagar
  * */
 @Data
-public class HotelPayload {
+public class HotelDTO {
     private Long id;
     private String name;
     private String postcode;
 
     private String phoneNumber;
-    private List<HotelBookMapPayload> bookings;
+    private List<HotelBookMapDTO> bookings;
 
     public Long getId() {
         return id;
@@ -50,11 +50,11 @@ public class HotelPayload {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<HotelBookMapPayload> getBookings() {
+    public List<HotelBookMapDTO> getBookings() {
         return bookings;
     }
 
-    public void setBookings(List<HotelBookMapPayload> bookings) {
+    public void setBookings(List<HotelBookMapDTO> bookings) {
         this.bookings = bookings;
     }
 }
